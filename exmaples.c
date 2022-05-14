@@ -73,3 +73,49 @@ int use_demo_scanf(int argc , char** argv){
         exit(EXIT_SUCCESS);
     }
 }
+
+typedef struct {
+    long sum;
+    long mean;
+}result ;
+
+result calculate_sum(char, int, ...);
+
+int test_va()
+//int main(){
+
+    result res = calculate_sum('a',5,1,2,3,4,5);
+    printf("Calculated sum is %ld \n",(calculate_sum('a',5,1,2,3,4,5)).sum); 
+    return 0;
+
+
+}
+
+
+result calculate_sum( char trivial, int count , ...){
+    va_list args , args_cpy;
+    va_copy(args_cpy,args);   
+    va_start(args,count);
+
+    // do your things here.
+    long sum = 0;
+    for(int i =0;i<count;++i)
+        sum+=va_arg(args,int);
+
+    va_end(args);
+
+    long sub_sum = 0;
+    long mean = 0;
+    for(int i =0;i<count;++i)
+        sub_sum += va_arg(args_cpy,int) , mean = sum/count;
+ 
+    result my_res; 
+    
+    my_res.sum = sum;
+    my_res.mean = mean;
+
+
+    return my_res;
+
+}
+

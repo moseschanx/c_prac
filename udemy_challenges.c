@@ -336,7 +336,7 @@ int main(void) {
 */
 
 
-int sec_cha1(int argc , char** argv) // problem : need some tiny fixes on words counting.
+int sec10_cha1(int argc , char** argv) // problem : need some tiny fixes on words counting.
 //int main(int argc , char** argv) 
 {
 
@@ -389,7 +389,7 @@ int sec_cha1(int argc , char** argv) // problem : need some tiny fixes on words 
     
 */
 
-int sec_cha2(int argc , char** argv)
+int sec10_cha2(int argc , char** argv)
 //int main(int argc , char** argv)
 {
 
@@ -501,7 +501,7 @@ bool dsir_chk(char* buf , char* dsir_ch){
     return false;
 
 }
-int sec_cha3(int argc, char** argv)
+int sec10_cha3(int argc, char** argv)
 //int main(int argc , char** argv)
 {
 
@@ -534,7 +534,7 @@ int sec_cha3(int argc, char** argv)
 
 
 */
-int sec_cha4()
+int sec10_cha4()
 //int main(int argc , char** argv)
 {
 
@@ -555,3 +555,187 @@ int sec_cha4()
    return 0; 
 }
 
+
+// Section 11 : challenge 1 
+    // Create your own prinf function using variadic functions
+
+void revert_str(char* des , char* src);
+void myitoa(long num,char* str);
+void myprintf( char* fmt , ...);
+
+int sec11_cha1(){
+//int main(){
+    
+    myprintf("This is a number %d , and a string %s ",42,"Hello, World!\n");
+
+    return 0;
+
+}
+
+void revert_str(char* des , char* src)
+{
+
+   int src_len = 0;
+    while(*src != '\0') ++src , ++src_len;
+    src -= src_len;
+
+    for(int i=0;i<src_len;++i)
+    {
+        des[src_len-1-i] = src[i];
+    }
+    des[src_len] = '\0';
+}
+
+void myitoa(long num,char* str)
+{
+    while(num>0)
+    {
+        *str++ = num%10 + 48;
+        num /= 10;
+    }
+    *str = '\0';
+}
+
+void myprintf( char* fmt , ...)
+{
+
+    char str[256],str_rev[256];
+    va_list args;
+    va_start(args,fmt);
+
+   while(*fmt != '\0')
+   {
+    if(*fmt == '%')
+    {
+        switch(*++fmt)
+        {
+        case 'd' :
+            myitoa(va_arg(args,int),str);
+            revert_str(str_rev,str);
+            fputs(str_rev,stdout);
+            break;
+
+        case 'c' :
+            fputc(va_arg(args,char),stdout);
+            break;
+           
+        case 's' :
+            fputs(va_arg(args,char*),stdout);
+            break;
+        }
+        ++fmt;
+    }else
+    {
+        fputc(*fmt,stdout);
+        ++fmt;
+    }
+    }
+
+    va_end(args);
+
+}
+
+// Section 11 challenge #2 :
+    /* 
+    write a program to claculate the sum of numbers from
+     1 to n using recursion.
+
+     Sample input / output : 
+        Input the last number of range starting from 1:5
+        the sum of numbers from 1 to 5 : 
+        15
+
+    write a program which will find GCD ( greatest common denominator )
+    of two numbers using recursion 
+
+     Sample input / output : 
+        Input 1st number : 10
+        Input 2nd number : 50
+
+        The GCD of 10 and 50 is : 10
+
+
+    write a progam which will find reverse a string using recursion 
+
+     Sample input / output : 
+        Enter the string : studytonight 
+
+        The orignal string is : studytonight 
+        The reverse string si : thginostyduts
+
+    */
+
+long rec_sum(int n){
+    if(n == 0) return 0;
+    return (n+rec_sum(n-1));
+}
+
+int find_gcd(int n1 , int n2)
+{
+    if(n1>n2){
+        
+        if(n1%n2 == 0) return n2;
+        else
+            return find_gcd(n1,n2/2);
+
+    }else if(n1<n2){
+
+        if(n2%n1 == 0) return n1;
+        else
+            return find_gcd(n2,n1/2);
+
+    }else if(n1 == n2){
+
+        return n1;
+        // or return n2 , this case they're both equal.
+
+    }else{
+        return 1;
+    }
+
+}
+
+char* reverse_string(char* str)
+{
+    static int i = 0;
+    static char res[256];
+    //if(str == NULL){ perror("String notcorrect ") ; return NULL; } 
+
+    if(*str)
+    {
+        reverse_string(res+1);
+        res[i++] = *str;
+    }
+//res[i++] =  *(reverse_string(++str));
+
+    return res;
+}
+int sec11_cha2() // problem at string reversal , maybe paltform issue?
+//int main() 
+{
+
+    printf("Test recursion : %ld\n",rec_sum(5));
+
+/* find gcd of two numbers */
+/*
+    int num1 , num2;
+    printf("Inpuit 1s number : ");
+    scanf("%d",&num1);
+
+    printf("Inpuit 2s number : ");
+    scanf("%d",&num2);
+
+    printf("The gcd of %d and %d is %d",num1,num2,find_gcd(num1,num2));
+
+*/
+/* find reverse string from input */
+
+    char str[256];
+    char *rev = NULL;
+    printf("Input some string to reverse : ");
+    scanf("%s",&str);
+
+    rev = reverse_string(str);
+    printf("Reversed string of %s is : %s \n",str,rev);
+    return 0;
+}
