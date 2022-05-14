@@ -75,21 +75,43 @@
 //int sec14_cha1to4()
 int main()
 {
-    //Challenge #1
+    /*Challenge #1
+    printf("__LINE__ is : %d\n",__LINE__);
+    printf("__FILE__ is : %s\n",__FILE__);
+    printf("__DATE__ is : %s\n",__DATE__); 
+    printf("__TIME__ is : %s\n",__TIME__);
+    printf("__STDC__ is : %d\n",__STDC__);
+    */
 
-    //Challenge #1
+    /*Challenge #2
+#define SUM_OF_TWO(param1,param2) ((param1)+(param2))
 
-    //Challenge #2
+    	int num1,num2;
+	printf("Please input two numer to get sum (by using macro) :");
+	scanf("%d%d",&num1,&num2);
 
-    //Challenge #2
+	printf("Your sum is : %d",SUM_OF_TWO(num1,num2));
+
+    */
     
-    //Challenge #3
+    /*Challenge #3
+#define CUBE(param) ((param)*(param)*(param))
+#define SQUARE(param) ((param)*(param))
+   	int num3; 
+	printf("Enter any number to find square and cube :");
+	scanf("%d",&num3);
 
-    //Challenge #3
+	printf("Square of %d is : %d \n",num3,SQUARE(num3));
+	printf("Cube of %d is : %d \n",num3,CUBE(num3));
+
+
+    */
 
     //Challenge #4
+#define IS_UPPER(param) (((param)<=90 && (param)>=65) ? 1 : 0)
+#define IS_LOWER(param) (((param)<=122 && (param)>=97) ? 1 : 0)
 
-    //Challenge #4
+    //
     
 
     return 0;
@@ -100,4 +122,3 @@ int main()
 
 
 
-    
