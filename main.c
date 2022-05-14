@@ -9,19 +9,6 @@
 #include <assert.h>
 #include <ctype.h>
 
-
-
-
-struct {
-    char *name;
-    union{
-        int i;
-        float f;
-        char c;
-    }data;
-
-}table [entries];
-
 int main(){
 
 
