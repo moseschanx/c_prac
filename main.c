@@ -9,6 +9,16 @@
 #include <assert.h>
 #include <ctype.h>
 
+    #define CONCAT(a,b) a##b
+    #define WARNING(...) fprintf(stderr,__VA_ARGS__)
+    #define PUTS(param) (puts(#param))
+    #define MAKE_FUNCTION(NAME) void print_##NAME(char* str){\
+                                puts("In fucntion : print_"#NAME );\
+                                printf("Your parameter is : %s ",str);\
+                                }
+    #define MAKE_FUNCTION_DECL(NAME) void print_##NAME()
+    #define MAKE_FUNCTION_CALL(NAME,STR) print_##NAME(STR)
+
 // Section 14 Challenge #1
 /*
 
@@ -71,7 +81,7 @@
             marcros
 
 */
-
+MAKE_FUNCTION_DECL(MOSESCHAN);
 //int sec14_cha1to4()
 int main()
 {
@@ -107,9 +117,14 @@ int main()
 
     */
 
+
     //Challenge #4
 #define IS_UPPER(param) (((param)<=90 && (param)>=65) ? 1 : 0)
 #define IS_LOWER(param) (((param)<=122 && (param)>=97) ? 1 : 0)
+#define CHECK(param) ()
+
+        MAKE_FUNCTION_CALL(MOSESCHAN,"DAMN SHIT");
+        
 
     //
     
@@ -119,6 +134,37 @@ int main()
 }
 
 
+MAKE_FUNCTION(MOSESCHAN)
 
 
+#define COMMAND(NAME) {#NAME,NAME##_command}
 
+
+struct command{
+    char* name;
+    void (*function)(void);
+}
+
+struct command commands[]={
+    {"quit",quit_command},
+    {"exit",exit_command},
+    {"draw",draw_command}
+    COMMAND(help)
+    
+};
+
+
+#define DeclarSort(prefix , type) \
+static int _DeclareSort_ ## prefix ## _Compare(const void *a, const void *b){\
+    const type *aa; const type *bb; \
+    aa = a; bb = b; \
+    if(aa<bb) return -1;\
+        else if(bb<aa) return 1;\
+        else return 0;\
+}\
+void prefix##_sort(type *a , int n){\
+qsort(a,sizeof(type),n,_DeclareSort_## prefix ##_Compare);\
+}
+
+
+DeclarSort(int , int)

@@ -34,9 +34,12 @@ main.o : main.c
 
 .PHONY : clean
 clean : 
-	rm -rf *.o *.out
+	rm -rf *.o *.out prep
 
 
 run : all
 	@./main.out
 
+prep : main.c 
+	rm -rf prep
+	$(CC) -E -o $@ $^	
