@@ -18,9 +18,10 @@ endif
 endif
 
 
-CCFLAGS = -x c -std=c99 -g -O0  -Wextra -pedantic
-LDFLAGS = -std=c99 -lm
+CCFLAGS = -x c -g -std=c99 -pg -O0  -Wextra -pedantic
+LDFLAGS = -std=c99 -lm -pg
 
+CCFLAGS += -D DEBUG
 
 all : main.o
 	$(LD) $(LDFLAGS) -o main.out $^	
@@ -34,7 +35,7 @@ main.o : main.c
 
 .PHONY : clean
 clean : 
-	rm -rf *.o *.out prep
+	rm -rf *.o *.out prep core
 
 
 run : all
@@ -42,4 +43,4 @@ run : all
 
 prep : main.c 
 	rm -rf prep
-	$(CC) -E -o $@ $^	
+	$(CC) -E -D DEBUG -o $@ $^	
