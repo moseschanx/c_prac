@@ -119,3 +119,53 @@ result calculate_sum( char trivial, int count , ...){
 
 }
 
+// MACROS 
+
+    #define CONCAT(a,b) a##b
+    #define WARNING(...) fprintf(stderr,__VA_ARGS__)
+    #define PUTS(param) (puts(#param))
+    #define MAKE_FUNCTION(NAME) void print_##NAME(char* str){\
+                                puts("In fucntion : print_"#NAME );\
+                                printf("Your parameter is : %s ",str);\
+                                }
+    #define MAKE_FUNCTION_DECL(NAME) void print_##NAME()
+    #define MAKE_FUNCTION_CALL(NAME,STR) print_##NAME(STR)
+
+    MAKE_FUNCTION_DECL(MOSESCHAN);
+
+    MAKE_FUNCTION(MOSESCHAN)
+
+
+#define COMMAND(NAME) {#NAME,NAME##_command}
+
+
+struct command{
+    char* name;
+    void (*function)(void);
+};
+
+struct command commands[]={
+    {"quit",quit_command},
+    {"exit",exit_command},
+    {"draw",draw_command}
+    COMMAND(help)
+    
+};
+
+// Generic programming in C using macro.
+#define DeclarSort(prefix , type) \
+static int _DeclareSort_ ## prefix ## _Compare(const void *a, const void *b){\
+    const type *aa; const type *bb; \
+    aa = a; bb = b; \
+    if(aa<bb) return -1;\
+        else if(bb<aa) return 1;\
+        else return 0;\
+}\
+void prefix##_sort(type *a , int n){\
+qsort(a,sizeof(type),n,_DeclareSort_## prefix ##_Compare);\
+}
+
+
+DeclarSort(int , int)
+
+//
