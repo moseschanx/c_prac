@@ -5,20 +5,20 @@ else
 
 ifeq ($(shell uname),Darwin)
 
-	CC = clang
-	LD = clang
+	CC := clang
+	LD := clang
 endif
 
 ifeq ($(shell uname),Linux)
 
-	CC = gcc 
-	LD = gcc 
+	CC := gcc 
+	LD := gcc 
 endif
 
 endif
 
 
-CCFLAGS = -x c -g -std=c99 -pg -O0  -Wextra -pedantic
+CCFLAGS = -x c -c -g -std=c99 -pg -O0  -Wextra -pedantic
 LDFLAGS = -std=c99 -lm -pg
 
 CCFLAGS += -D DEBUG
@@ -29,13 +29,15 @@ all : main.o
 main.o : main.c
 	$(CC) $(CCFLAGS) -c -o $@ $^
 
+pcbtool : pcbtool.c
+	$(CC) -g -DDEBUG -DDBG_LEVL=2 -o  $@ $^
 
 .PHONY : all 
 
 
 .PHONY : clean
 clean : 
-	rm -rf *.o *.out prep core
+	rm -rf *.o *.out prep core pcbtool
 
 
 run : all
@@ -44,3 +46,5 @@ run : all
 prep : main.c 
 	rm -rf prep
 	$(CC) -E -D DEBUG -o $@ $^	
+
+
