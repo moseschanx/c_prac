@@ -88,14 +88,12 @@ unsigned debug_level = DBG_LEVL; // Debug depth extend as number grow
         #define DBG(level , fmt , ...) \
         if(debug_level >= level){ \
         if(level == 1) \
-            #define COLOR "\033[0;32m" \  // Green
+        fprintf(stderr,"At file %s line %d : \t",__FILE__,__LINE__) ,fprintf(stderr ,"\033[0;32m"fmt"\n" COL_CLR , ##__VA_ARGS__ );\
         if(level == 2) \
-            #define COLOR "\033[0;33m"  \
-        if(level == 3)\
-            #define COLOR "\033[0;31m"  \
-        \
-        fprintf(stderr,"At file %s line %d : \t",__FILE__,__LINE__) ,\
-                            fprintf(stderr ,COLOR fmt"\n" COL_CLR , ##__VA_ARGS__ );} // ## for the error depression purpose.
+        fprintf(stderr,"At file %s line %d : \t",__FILE__,__LINE__) ,fprintf(stderr ,"\033[0;33m"fmt"\n" COL_CLR , ##__VA_ARGS__ );\
+        if(level == 3) \
+        fprintf(stderr,"At file %s line %d : \t",__FILE__,__LINE__) ,fprintf(stderr ,"\033[0;31m"fmt"\n" COL_CLR , ##__VA_ARGS__ );\
+        }
 #else
     #define DBG(level , fmt , ...)
 #endif
@@ -146,7 +144,7 @@ int main(int argc , char** argv)
 
   puts("");  
 
-  DBG(1 , "\033[0;31m""Program normal exit.");
+  DBG(1 , "Program normal exit.");
   exit(EXIT_SUCCESS);
 
 }
@@ -188,19 +186,52 @@ void soldermsk_gen(char* pt)
       Point pt_start;
       Point pt_itmd; // Intermediate processing point
       Point pt_array[256];
+      int sign;
+
+      pt_start.x = pt_start.y = 0;
 
       //extract start point from commandline argument 
-      if(*pt == '(')
-        while(isspace(*(++pt)));
-        while(isdigit(*(++pt)))
-          pt_start.x = pt_start.x * 10 + (*pt) - '0';
-        if(*pt == ',')
-        while(isspace(*(++pt)));
-        while(isdigit(*(++pt)))
-          pt_start.y = pt_start.y * 10 + (*pt) - '0';
-        if(*pt == ')');
-      else
-        syntax_error_exit();
+        if(*pt == '-')
+        {
+          DBG(3,"x in Origin : negative sign detected.")
+          sign = -1;
+          ++pt;
+        }
+        else
+        {
+          DBG(3,"x in Origin : negative sign not detected.")
+          sign = 1;
+        }
+        while(isdigit(*(pt)))
+        {
+          DBG(3,"Digit Detected.");
+          pt_start.x = sign * (pt_start.x * 10 + (*pt) - '0');
+          DBG(3,"pt_startx now is  : %.2f",pt_start.x);
+          ++pt;
+        }
+        if(*pt++ == ',')
+        {
+        DBG(3," , Detected.");
+
+        if(*pt == '-')
+        {
+          DBG(3,"y in Origin : negative sign detected.")
+          sign = -1;
+          ++pt;
+        }
+        else
+        {
+          DBG(3,"y in Origin : negative sign not detected.")
+          sign = 1;
+        }
+        while(isdigit(*(pt)))
+        {
+          DBG(3,"Digit Detected.");
+          pt_start.y = sign * (pt_start.y * 10 + (*pt) - '0');
+          DBG(3,"pt_starty now is  : %.2f",pt_start.y);
+          ++pt;
+        }
+        }else syntax_error_exit();
 
     pt_itmd.x = pt_start.x , pt_itmd.y = pt_start.y;
 
@@ -212,6 +243,29 @@ void soldermsk_gen(char* pt)
       ungetc(c,stdin);
       if((c=fgetc(stdin)) == 'i')
       {
+        switch(fgetc(stdin))
+        {
+          case 'x' :
+           while(isspace(c=fgetc(stdin)));
+           ungetc(c,stdin);
+
+            scanf("%f", &pt_itmd.x);
+            ++i_x;
+            break;
+
+          case 'y' :
+           while(isspace(c=fgetc(stdin)));
+           ungetc(c,stdin);
+
+            scanf("%f", &pt_itmd.y);
+            ++i_y;
+
+            break;
+          default : 
+            input_syntax_error_exit();
+        }
+      }
+/*
         if((c=fgetc(stdin)) == 'x')
         {
           while(isspace(c=fgetc(stdin)));
@@ -239,6 +293,7 @@ void soldermsk_gen(char* pt)
         }else;
       }else input_syntax_error_exit();
 
+*/
           
     }
 
@@ -256,7 +311,7 @@ noreturn void error_exit()
 noreturn void syntax_error_exit()
 {
  puts("Point syntax error.");
- puts("Usage : pcbtool -S (<x>,<y>)");
+ puts("\tUsage : pcbtool -S (<x>,<y>)");
  exit(EXIT_FAILURE);
 }
 noreturn void input_syntax_error_exit()

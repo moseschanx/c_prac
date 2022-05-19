@@ -30,7 +30,7 @@ main.o : main.c
 	$(CC) $(CCFLAGS) -c -o $@ $^
 
 pcbtool : pcbtool.c
-	$(CC) -g -DDEBUG -DDBG_LEVL=2 -o  $@ $^
+	$(CC) -g -std=c99 -DDEBUG -DDBG_LEVL=3 -O0 -o  $@ $^
 
 .PHONY : all 
 
