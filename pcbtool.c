@@ -235,6 +235,8 @@ void soldermsk_gen(char* pt)
 
     pt_itmd.x = pt_start.x , pt_itmd.y = pt_start.y;
 
+    DBG(3,"Your origin point now is (%.2f,%.2f)",(pt_itmd.x),(pt_itmd.y));
+
 
     puts("Please enter a set of displacement of your pattern :");
     char c; unsigned i = 0 ,i_x =0 , i_y = 0; // Indexes for generating new point 
@@ -265,6 +267,14 @@ void soldermsk_gen(char* pt)
             input_syntax_error_exit();
         }
       }
+      if(i_x == i_y)
+      {
+        pt_array[i].x = pt_itmd.x;
+        pt_array[i].y = pt_itmd.y;
+        pt_itmd.x = pt_itmd.y = 0;
+        ++i;
+      }
+      
 /*
         if((c=fgetc(stdin)) == 'x')
         {
