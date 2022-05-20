@@ -2,7 +2,7 @@
 #include <stdbool.h>
 
 #include "string_functions.h"
-int number_of_characters_in_string(char* str , char srchCha)
+bool number_of_characters_in_string(char* str , char srchCha)
 {
     char c ;
     unsigned cnt = 0;
@@ -16,7 +16,7 @@ bool remove_non_alpha_characters(char* src)
 
     char* c;
     while((c = (*src++))!='\0')
-    {
+    {u
         if(!(c <= 'z' && c >= 'a' ||c <= 'Z' && c >= 'A'))
             (*(src-1)) = '\0';
 

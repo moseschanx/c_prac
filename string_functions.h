@@ -6,13 +6,13 @@
       srchCha - character to look for
       return type - int : count for the number of times that character was found
       */
-     int numer_of_characters_in_string(char* str , char srchCha);
+     bool number_of_characters_in_string(char* str , char srchCha);
 
      /*
      src - source string
      return type - int : 0 on success
      */
-     int remove_non_alpha_characters(char* src);
+     bool remove_non_alpha_characters(char* src);
 
      /*
      src - source string
