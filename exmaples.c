@@ -168,4 +168,70 @@ qsort(a,sizeof(type),n,_DeclareSort_## prefix ##_Compare);\
 
 DeclarSort(int , int)
 
-//
+int pcbtool_prototype(){
+
+unsigned choice;
+
+start:
+    printf("Select function : \n \
+            \t \t 1.millimeter to mil.\n \
+            \t \t 2.Mil to millimeter. \n \
+            \t \t \t");
+    scanf("%d",&choice);
+    if(choice == 1)
+      goto mtoM;
+    if(choice == 2)
+      goto Mtom;
+    else
+      goto start;
+
+
+  float mm , mil;
+
+mtoM:
+  printf("millimeter to mil : ");
+
+  if(getchar() == 'b')
+  {
+    switch(getchar()){
+      case '1' :
+        puts("");
+        goto mtoM;
+      case '2' :
+        puts("");
+        goto Mtom;
+    }
+    goto start;
+  }
+  scanf("%f",&mm);
+
+  mil = (mm / 25.4)*1000; 
+
+  printf("%.2f\n",mil);
+  goto mtoM;
+
+Mtom:
+  printf("Mil to millimeter: ");
+  if(getchar() == 'b')
+  {
+    switch(getchar()){
+      case '1' :
+        puts("");
+        goto mtoM;
+      case '2' :
+        puts("");
+        goto Mtom;
+    }
+    goto start;
+  }
+
+  scanf("%f",&mil);
+
+  mm = (mil * 25.4)/1000; 
+
+  printf("%.4f\n",mm);
+  goto Mtom;
+
+  
+  
+

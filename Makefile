@@ -29,15 +29,13 @@ all : main.o
 main.o : main.c
 	$(CC) $(CCFLAGS) -c -o $@ $^
 
-pcbtool : pcbtool.c
-	$(CC) -g -std=c99 -DDEBUG -DDBG_LEVL=3 -O0 -o  $@ $^
 
 .PHONY : all 
 
 
 .PHONY : clean
 clean : 
-	rm -rf *.o *.out prep core pcbtool
+	rm -rf *.o *.out prep core 
 
 
 run : all
