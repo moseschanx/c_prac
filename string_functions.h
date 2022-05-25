@@ -1,12 +1,16 @@
 #ifndef STRING_FUNC_H
 #define STRING_FUNC_H
 
+#ifdef __cplusplus
+      extern "C"{
+#endif
+
       /*
       str - string to search
       srchCha - character to look for
       return type - int : count for the number of times that character was found
       */
-     bool number_of_characters_in_string(char* str , char srchCha);
+     int number_of_characters_in_string(char* str , char srchCha);
 
      /*
      src - source string
@@ -35,5 +39,9 @@
      return type - bool : 0 on success 
      */
      bool sub_str(char* src, int i_start, int n, char* dest);
+
+#ifdef __cplusplus
+      }
+#endif
      
 #endif

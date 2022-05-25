@@ -1265,4 +1265,282 @@ void allocateMemory(void **ptr)
 
 }
 
-/
+
+#include "string_functions.h"
+
+// Section 17 Challenge #1
+
+/*
+    The goal of this challenge is to create a static library and then write a program that uses that library
+     
+    Create a C source file named "StringFunctions.c"
+
+    StringFunctions.c should contain implementation of various string manipulation functions
+      Find the frequency of characters in a string
+      Remove all the characters in a String except Alphabets
+      Calculate the length of string without using strlen
+      Concatenate Two strings without using strcat
+      Copy a string manually without using strcpy
+      Find the substring of a given string
+
+    Steps : 
+
+      Create a header file that contains function prototypes of each string manipulation function in "StringFunctions.h"
+
+      Create your "StringFunctions.c" source file that implements all of the funtions in the header file .
+      
+      create a static library (.a) containing your string manipulation functions 
+
+      Create a program that acts as a driver for your string functions
+        Test all your functions in this file.
+        Statically link this program to your static library 
+
+      Manually compile and run ( familiar with thoese commands )
+
+      review the demostration and solution provided for further understanding 
+
+
+*/
+
+// Section 17 Challenge #2
+/*  
+    The goal of this challenge is to createa a shared object ( dll or dynamic library ) and then write a program that uses this library
+
+
+    All steps are same as in Challenge#1 but except step 3. 
+    Create a shared object library(.so) containing your string manipulation functions 
+*/
+// Section 17 Challenge #2
+/*
+
+    Dynamically load the shared objects library previously created.
+
+    Create function pointers for all 6 string functions from the shared object library.
+
+    Set the function pointers to the right symbol/function using the dlsym function
+      use dlerror to check fro errors 
+
+    Invoke all of the functions declared.
+
+
+*/
+
+
+
+int main()
+{
+
+  /*
+
+  char* test1 = "Hello";
+
+  int n =   number_of_characters_in_string(test1, 'l');
+
+  printf(" l in hello occured %d time(s)\n",n);
+
+  char test2[] = "H1e2llo";
+
+  if(remove_non_alpha_characters(test2))
+    perror("Error.");
+
+  printf("removed nonalpha character strring %s \n",test2);
+
+  int len = length_of_string(test2);
+  
+  printf("The length of the sring is %d \n", len);
+
+
+
+  char str_dest[length_of_string(test2)];
+
+  if(str_cpy(test2,str_dest))
+    perror("copy error");
+
+  printf("Copied string is %s \n",str_dest);
+
+
+  int desired_str_len = 3;
+
+  char desired_str[desired_str_len];
+
+  if(sub_str(test2,2,desired_str_len,desired_str))
+    perror("Error");
+
+  printf("Desired substring from position 2 extend %d in string %s is : %s \n"
+            ,desired_str_len,test2,desired_str);
+     
+   
+  */
+
+  char* error_msg = NULL;
+  if((error_msg = dlerror())!=NULL)
+#include "string_functions.h"
+
+// Section 17 Challenge #1
+
+/*
+    The goal of this challenge is to create a static library and then write a program that uses that library
+     
+    Create a C source file named "StringFunctions.c"
+
+    StringFunctions.c should contain implementation of various string manipulation functions
+      Find the frequency of characters in a string
+      Remove all the characters in a String except Alphabets
+      Calculate the length of string without using strlen
+      Concatenate Two strings without using strcat
+      Copy a string manually without using strcpy
+      Find the substring of a given string
+
+    Steps : 
+
+      Create a header file that contains function prototypes of each string manipulation function in "StringFunctions.h"
+
+      Create your "StringFunctions.c" source file that implements all of the funtions in the header file .
+      
+      create a static library (.a) containing your string manipulation functions 
+
+      Create a program that acts as a driver for your string functions
+        Test all your functions in this file.
+        Statically link this program to your static library 
+
+      Manually compile and run ( familiar with thoese commands )
+
+      review the demostration and solution provided for further understanding 
+
+
+*/
+
+// Section 17 Challenge #2
+/*  
+    The goal of this challenge is to createa a shared object ( dll or dynamic library ) and then write a program that uses this library
+
+
+    All steps are same as in Challenge#1 but except step 3. 
+    Create a shared object library(.so) containing your string manipulation functions 
+*/
+// Section 17 Challenge #2
+/*
+
+    Dynamically load the shared objects library previously created.
+
+    Create function pointers for all 6 string functions from the shared object library.
+
+    Set the function pointers to the right symbol/function using the dlsym function
+      use dlerror to check fro errors 
+
+    Invoke all of the functions declared.
+
+
+*/
+
+
+
+int main()
+{
+
+
+  char* test1 = "Hello";
+
+  int n =   number_of_characters_in_string(test1, 'l');
+
+  printf(" l in hello occured %d time(s)\n",n);
+
+  char test2[] = "H1e2llo";
+
+  if(remove_non_alpha_characters(test2))
+    perror("Error.");
+
+  printf("removed nonalpha character strring %s \n",test2);
+
+  int len = length_of_string(test2);
+  
+  printf("The length of the sring is %d \n", len);
+
+
+
+  char str_dest[length_of_string(test2)];
+
+  if(str_cpy(test2,str_dest))
+    perror("copy error");
+
+  printf("Copied string is %s \n",str_dest);
+
+
+  int desired_str_len = 3;
+
+  char desired_str[desired_str_len];
+
+  if(sub_str(test2,2,desired_str_len,desired_str))
+    perror("Error");
+
+  printf("Desired substring from position 2 extend %d in string %s is : %s \n"
+            ,desired_str_len,test2,desired_str);
+     
+   
+
+  char* error_msg = NULL;
+  if((error_msg = dlerror())!=NULL)
+  {
+    printf("Error detected , clearing : %s \nn", error_msg);
+    error_msg = NULL;
+  }
+
+  const char* file_name = "./libstring_functions.so";
+
+  void* handle = dlopen(file_name,RTLD_LAZY);
+  if(!handle)
+    fputs(dlerror(),stderr) ,exit(EXIT_FAILURE);
+
+
+
+  int (*number_of_characters_in_string)(char*,char) = dlsym(handle , "number_of_characters_in_string");
+  bool (*remove_non_alpha_characters)(char*) = dlsym(handle , "remove_non_alpha_characters");
+  int (*length_of_string)(char*) = dlsym(handle,"length_of_string");
+  bool (*str_cpy)(char* , char*) = dlsym(handle , "str_cpy");
+  bool (*sub_str)(char* , int , int , char*) = dlsym(handle , "sub_str");
+
+
+  if((error_msg = dlerror())!=NULL)
+  {
+    printf("Error detected : %s \nn", error_msg);
+    error_msg = NULL;
+  }
+
+
+
+  return 0;
+
+
+
+}
+
+  }
+
+  const char* file_name = "./libstring_functions.so";
+
+  void* handle = dlopen(file_name,RTLD_LAZY);
+  if(!handle)
+    fputs(dlerror(),stderr) ,exit(EXIT_FAILURE);
+
+
+
+  int (*number_of_characters_in_string)(char*,char) = dlsym(handle , "number_of_characters_in_string");
+  bool (*remove_non_alpha_characters)(char*) = dlsym(handle , "remove_non_alpha_characters");
+  int (*length_of_string)(char*) = dlsym(handle,"length_of_string");
+  bool (*str_cpy)(char* , char*) = dlsym(handle , "str_cpy");
+  bool (*sub_str)(char* , int , int , char*) = dlsym(handle , "sub_str");
+
+
+  if((error_msg = dlerror())!=NULL)
+  {
+    printf("Error detected : %s \nn", error_msg);
+    error_msg = NULL;
+  }
+
+
+
+  return 0;
+
+
+
+}
