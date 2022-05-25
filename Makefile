@@ -22,7 +22,7 @@ endif
 TARGET = main.out
 
 CCFLAGS = -x c -c -g -std=c99 -pg -O0  -Wextra -pedantic
-LDFLAGS = -std=c99 -lm -pg -ldl 
+LDFLAGS = -std=c99 -lm -pg 
 
 # TO use separate static library (.a ) linking , you need recompile
 # the final target using GCC instead of LD or liker optioons 
@@ -42,21 +42,14 @@ all : $(TARGET)
 
 
 
-$(TARGET) : main.o  libstring_functions.so
+$(TARGET) : main.o  
 	$(LD)  -o $@ $<	 $(LDFLAGS)
 
 main.o : main.c
 	$(CC) $(CCFLAGS) -c -o $@ $<
 
-string_functions.o : string_functions.c
-	$(CC) $(CCFLAGS) -c -o $@ $<
+
 	
-libstring_functions.a : string_functions.o
-		ar rcs libstring_functions.a $^ ;		
-
-libstring_functions.so : string_functions.c
-	$(CC) -fPIC -shared $^ -o $@
-
 
 .PHONY : all 
 
