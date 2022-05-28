@@ -248,7 +248,7 @@
        number % 2 == 0
 
       You can use the sleep(1) call after all threads have been created and are running before checking if 
-      the even threads have finished 
+      the even threads have finished       
 
         
 */
@@ -275,13 +275,60 @@
 
 
 */
+int compare(const void* a, const void* b)
+{
 
+  const int* pa = (const int*)a;
+  const int* pb = (const int*)b;
+
+  if(*pa>*pb) return 1;
+  if(*pa<*pb) return -1;
+  return 0;
+
+}
 int main()
 {
 
+
+  /*#1
+    srand(time(NULL));
+    for(int i = 0; i<20;++i){
+    double a = rand() / (double)RAND_MAX - 0.5;
+    printf("%.2f ",a);
+    }
+    puts("");
+  */
+
+  //#2
+  // void qsort( void *ptr , size_t count , size_t size , int (*comp)(const void*,const void*)));
+  // ptr : pointer the to array to sort 
+  // count : number of each element in the array in bytes
+  // comp : comparison function which return a negative integer value if the first argument is less than
+  //        the second , a positve for the opposite situation.
+  //        The function must not modify the objects passed to it . 
+
+
+  int sz = 9;
+  int nums[sz];
+  srand(time(NULL));
+
+  for(int i =0;i<sz;++i)
+    nums[i] = rand()%101;
+
+  puts("Randomly generated numbers : ");
+  for(int i =0;i<sz;++i)
+    printf("%d ",nums[i]);
+  puts("");
+
+  qsort(nums,sz,sizeof(int),&compare);
+
+  puts("Sorted numbers are : ");
+  for(int i =0;i<sz;++i)
+    printf("%d ",nums[i]);
+  puts("");
   
 
-
-  exit(EXIT_SUCCESS);
+exit(EXIT_SUCCESS);
 
 }
+
