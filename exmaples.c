@@ -69,24 +69,7 @@ int use_demo_scanf(int argc , char** argv){
     }else if(feof(fp)){
         puts("EOF reached. Program Exit().");
         fclose(fp);
-        remove("myname");
-        exit(EXIT_SUCCESS);
-    }
-}
-
-typedef struct {
-    long sum;
-    long mean;
-}result ;
-
-result calculate_sum(char, int, ...);
-
-int test_va()
-//int main(){
-
-    result res = calculate_sum('a',5,1,2,3,4,5);
-    printf("Calculated sum is %ld \n",(calculate_sum('a',5,1,2,3,4,5)).sum); 
-    return 0;
+        remove("myname");//StringFunctions.c
 
 
 }
@@ -235,3 +218,68 @@ Mtom:
   
   
 
+
+  printf("Random number in [0,%d) : %d\n",RAND_MAX,random_number);
+
+  time_t epoch = time(NULL);
+  printf("%jd seconds since the epoch began \n",(__intmax_t)epoch);
+
+
+  // struct tm* localtime ( const time_t *timer);
+  // time_t time ( time_t *arg);
+  // char* asctime(const struct tm* time_ptr);
+  // struct tm* gmtime(const time_t *timer);
+  // time_t mktime( struct tm* time );
+
+  // void srand(unsigned seed);
+
+  /* struct tm {
+    int tm_sec;
+    int tm_min;
+    int tm_hour;
+    int tm_mday;
+    int tm_mon;
+    int tm_year;
+    int tm_wday;
+    int tm_yday;
+    int tm_isdst;
+  }
+  */
+
+  struct tm* tm = localtime(&(time_t){time(NULL)});
+  printf("localtime is : %s\n",asctime(tm));
+
+  tm = gmtime(&(time_t){time(NULL)});
+  
+  printf("gm time is : %s \n",asctime(tm));
+
+  printf("DST is %s \n",tm->tm_isdst?"in effect" : " no in effect ");
+
+  struct tm tm0 = {.tm_mday=26 , .tm_isdst = true , .tm_year = 101  , .tm_mon = 9-1};
+  
+  mktime(&tm0);
+
+  printf("After mktime() %s\n",asctime(&tm0));
+
+
+srand(time(NULL));
+
+for(int i = 0;i<20; ++i){
+
+  static float a  = 0;
+  a = (rand()%2001 -1000) / 2.e3;
+  printf("%.4f ", a);
+
+
+}
+
+
+int find_max(int nums[],int len)
+{
+  int i , max_num = nums[0];
+  for(i=1;i<len;++i){
+    if(max_num<nums[i])
+      max_num = nums[i];
+  }
+  return max_num;
+}
