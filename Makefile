@@ -46,11 +46,14 @@ all : $(TARGET)
 
 
 
-$(TARGET) : main.o  
-	$(LD)  -o $@ $<	 $(LDFLAGS)
+$(TARGET) : main.o libstructures.so
+	$(LD)  -o  $@ $< -L. -lstructures $(LDFLAGS)
 
 main.o : main.c
-	$(CC) $(CCFLAGS) -c -o $@ $<
+	$(CC) $(CCFLAGS) -DDEBUG -c -o $@ $<
+
+libstructures.so : structures.c
+	$(CC) -fPIC -shared -std=c99 -g -O0 -o $@ $^
 
 
 	

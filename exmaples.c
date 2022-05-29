@@ -225,43 +225,6 @@ Mtom:
   printf("%jd seconds since the epoch began \n",(__intmax_t)epoch);
 
 
-  // struct tm* localtime ( const time_t *timer);
-  // time_t time ( time_t *arg);
-  // char* asctime(const struct tm* time_ptr);
-  // struct tm* gmtime(const time_t *timer);
-  // time_t mktime( struct tm* time );
-
-  // void srand(unsigned seed);
-
-  /* struct tm {
-    int tm_sec;
-    int tm_min;
-    int tm_hour;
-    int tm_mday;
-    int tm_mon;
-    int tm_year;
-    int tm_wday;
-    int tm_yday;
-    int tm_isdst;
-  }
-  */
-
-  struct tm* tm = localtime(&(time_t){time(NULL)});
-  printf("localtime is : %s\n",asctime(tm));
-
-  tm = gmtime(&(time_t){time(NULL)});
-  
-  printf("gm time is : %s \n",asctime(tm));
-
-  printf("DST is %s \n",tm->tm_isdst?"in effect" : " no in effect ");
-
-  struct tm tm0 = {.tm_mday=26 , .tm_isdst = true , .tm_year = 101  , .tm_mon = 9-1};
-  
-  mktime(&tm0);
-
-  printf("After mktime() %s\n",asctime(&tm0));
-
-
 srand(time(NULL));
 
 for(int i = 0;i<20; ++i){

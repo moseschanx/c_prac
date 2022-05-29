@@ -12,55 +12,6 @@
 #include <time.h>
 
 
-// Section 18 Challenge  
-/*
-
-  #1
-    test your understanding of random numbers
-
-    Write a C program taht generate 50 ramdom numbers between -0.5 and 0.5
-
-    Out put the random numbers
-      the first line of output should be the number of data 
-      the next 50 lines should be the 50 random numbers
-
-    You're required to use the srand function , passing in the time function 
-      as a seed to using the rand() function.
-
-  #2
-    test your understanding of the quick sort algorithm ( qsort() ) from the stdlib.h file
-
-    Write a program that will sort an array of doubles from lowest to highest using the qsort function 
-    Create a function that takes a double array and a size parameter which generates some random double values
-
-      void fillarray(double ar[],int n);
-
-    Create a function that takes a double array and a size parameter which generates some random double values
-      void showarray(const double ar[] , int n);
-
-    Your main function should 
-      Create an array 
-      fill it with random numbers
-      display it 
-      sort it using qsort 
-      display the sorted array
-
-  #3
-    test your understanding of getting the current time 
-
-      Write a program to print the current time
-      You should see the time and ctime functions
-      You should handle errors using fprintf and the exit function with the correct failure code 
-
-  #4
-
-    test your understanding of using the tm structure 
-
-    Write a program to compute the number of seconds passed since the beginning of the current month
-      You should use the localtime , difftime , and mktime functions
-      You should handlel errors using fprintf and the exit function with the correct failure codes
-*/
-
 // Section 19 Challenges
 /*
 
@@ -91,6 +42,35 @@
   
 
 */
+#ifdef DEBUG
+  #define DISPLAY_LIST(n) display_list(n)
+#endif
+
+#include "structures.h"
+int main()
+{
+
+  node* n = (node*)malloc(sizeof(node));  //cuz you want to change where the pointer points to 
+  init_list(&n,22);
+  DISPLAY_LIST(n);
+
+  insert_node_begin(&n,21);
+  DISPLAY_LIST(n);
+ 
+  insert_node_trail(&n,23);
+  DISPLAY_LIST(n);
+  insert_node_anypos(&n,2,32);
+  DISPLAY_LIST(n);
+  update_node(&n,3,22);
+  DISPLAY_LIST(n);
+
+  //printf("42 is at list position %d \n",*search_node(&n,42));
+  display_poses(search_node(&n,22));
+  //int* a = search_node(&n,22);
+
+  exit(EXIT_SUCCESS);
+  
+}
 
 // Section 20 Challenge.
 /*
@@ -275,60 +255,3 @@
 
 
 */
-int compare(const void* a, const void* b)
-{
-
-  const int* pa = (const int*)a;
-  const int* pb = (const int*)b;
-
-  if(*pa>*pb) return 1;
-  if(*pa<*pb) return -1;
-  return 0;
-
-}
-int main()
-{
-
-
-  /*#1
-    srand(time(NULL));
-    for(int i = 0; i<20;++i){
-    double a = rand() / (double)RAND_MAX - 0.5;
-    printf("%.2f ",a);
-    }
-    puts("");
-  */
-
-  //#2
-  // void qsort( void *ptr , size_t count , size_t size , int (*comp)(const void*,const void*)));
-  // ptr : pointer the to array to sort 
-  // count : number of each element in the array in bytes
-  // comp : comparison function which return a negative integer value if the first argument is less than
-  //        the second , a positve for the opposite situation.
-  //        The function must not modify the objects passed to it . 
-
-
-  int sz = 9;
-  int nums[sz];
-  srand(time(NULL));
-
-  for(int i =0;i<sz;++i)
-    nums[i] = rand()%101;
-
-  puts("Randomly generated numbers : ");
-  for(int i =0;i<sz;++i)
-    printf("%d ",nums[i]);
-  puts("");
-
-  qsort(nums,sz,sizeof(int),&compare);
-
-  puts("Sorted numbers are : ");
-  for(int i =0;i<sz;++i)
-    printf("%d ",nums[i]);
-  puts("");
-  
-
-exit(EXIT_SUCCESS);
-
-}
-
