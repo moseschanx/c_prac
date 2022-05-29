@@ -1,6 +1,7 @@
 
 ifeq ($(OS),Windows_NT)
 
+
 else
 
 ifeq ($(shell uname),Darwin)
@@ -15,14 +16,17 @@ ifeq ($(shell uname),Linux)
 	LD := gcc 
 
 	ULIMIT = ulimit -c unlimited
+
+	CCFLAGS += -pg
+	LDFLAGS += -pg
 endif
 
 endif
 
 TARGET = main.out
 
-CCFLAGS = -x c -c -g -std=c99 -pg -O0  -Wextra -pedantic
-LDFLAGS = -std=c99 -lm -pg 
+CCFLAGS = -x c -c -g -std=c99  -O0  -Wextra -pedantic
+LDFLAGS = -std=c99 -lm  
 
 # TO use separate static library (.a ) linking , you need recompile
 # the final target using GCC instead of LD or liker optioons 
