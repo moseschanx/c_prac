@@ -44,12 +44,14 @@
 */
 #ifdef DEBUG
   #define DISPLAY_LIST(n) display_list(n)
+  #define DISPLAY_STACK() display_stack()
 #endif
 
 #include "structures.h"
 int main()
 {
 
+/*
   node* n = (node*)malloc(sizeof(node));  //cuz you want to change where the pointer points to 
   init_list(&n,22);
   DISPLAY_LIST(n);
@@ -63,10 +65,25 @@ int main()
   DISPLAY_LIST(n);
   update_node(&n,3,22);
   DISPLAY_LIST(n);
+ */
 
   //printf("42 is at list position %d \n",*search_node(&n,42));
-  display_poses(search_node(&n,22));
+  // display_poses(search_node(&n,22));
   //int* a = search_node(&n,22);
+
+  init_stack(0);
+  DISPLAY_STACK();
+  push_stack(1);
+  push_stack(2);
+  
+  push_stack(3);
+  DISPLAY_STACK();
+  pop_stack();
+  pop_stack();
+  pop_stack();
+  pop_stack();
+  DISPLAY_STACK();
+  
 
   exit(EXIT_SUCCESS);
   

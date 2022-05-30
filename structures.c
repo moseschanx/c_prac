@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "structures.h"
 
@@ -130,4 +131,75 @@ void display_list(node* n_begin)
 
     puts("list end reached !\n");
 
+}
+
+node* stack_begin=NULL;
+node* stack_ptr=NULL;
+
+void init_stack(int data)
+{
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->data = data;
+    new_node->next = NULL;
+    stack_begin = new_node;
+    stack_ptr = stack_begin;
+  
+}
+
+void push_stack(int data)
+{
+    node* add_node = (node*)malloc(sizeof(node));
+    add_node->next = NULL;
+    add_node->data =  data;
+
+    stack_ptr->next = add_node;
+    stack_ptr = add_node;
+}
+
+int pop_stack()
+{
+    // return data part
+    if(is_stack_empty()) return 0;
+    int data = stack_ptr->data; 
+
+    /* 
+    *   
+    */  
+    node* ptr = stack_begin->next;
+    node* prev_ptr = stack_begin;
+    for(;ptr->next!=NULL;prev_ptr=ptr,ptr=ptr->next);
+    free(ptr);
+    prev_ptr->next=NULL;
+    stack_ptr = prev_ptr;
+
+    return data;
+}
+
+int peek_stack()
+{
+    return stack_ptr->data;
+}
+
+void clear_stack()
+{
+    node* prev_ptr = stack_begin;
+    node* ptr = stack_begin->next;
+
+    for(;ptr->next!=NULL;prev_ptr=ptr,ptr=ptr->next)
+            free(prev_ptr);
+
+    free(ptr);
+}
+
+bool is_stack_empty()
+{
+    return (stack_ptr->data==0&&stack_ptr->next==NULL) ? true : false;
+} 
+
+
+void display_stack()
+{
+    if(!is_stack_empty())
+        display_list(stack_begin);
+    return;
 }
