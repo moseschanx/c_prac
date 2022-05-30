@@ -203,3 +203,77 @@ void display_stack()
         display_list(stack_begin);
     return;
 }
+
+node* queue_begin;
+node* queue_ptr;
+
+void init_queue(int data)
+{
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->data = data;
+    new_node->next = NULL;
+
+    queue_begin = new_node;
+
+}
+
+void in_queue(int data)
+{
+    node* add_node = (node*)malloc(sizeof(node));
+    add_node->prev = NULL;
+    add_node->data =  data;
+
+    queue_ptr->prev = add_node;
+    queue_ptr = add_node;
+}
+
+int de_queue()
+{
+    // return data part
+    if(is_stack_empty()) return 0;
+    int data = queue_ptr->data; 
+
+    /* 
+    *   
+    */  
+    node* ptr = queue_begin->prev;
+    node* prev_ptr = queue_begin;
+    for(;ptr->next!=NULL;prev_ptr=ptr,ptr=ptr->prev);
+    free(ptr);
+    prev_ptr->prev=NULL;
+    queue_begin = prev_ptr;
+
+    return data;
+  
+}
+
+void clear_queue()
+{
+    node* prev_ptr = queue_begin;
+    node* ptr = queue_begin->prev;
+
+    for(;ptr->next!=NULL;prev_ptr=ptr,ptr=ptr->prev)
+            free(prev_ptr);
+
+    free(ptr);
+
+}
+
+bool is_queue_empty()
+{
+
+    return (queue_ptr->data==0&&queue_ptr->next==NULL) ? true : false;
+}
+
+int peek_queue()
+{
+    return queue_ptr->data;
+}
+
+void display_queue()
+{
+    if(!is_queue_empty())
+        display_list(queue_begin);
+    return;
+
+}

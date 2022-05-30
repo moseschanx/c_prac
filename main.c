@@ -45,6 +45,7 @@
 #ifdef DEBUG
   #define DISPLAY_LIST(n) display_list(n)
   #define DISPLAY_STACK() display_stack()
+  #define DISPLAY_QUEUE() display_queue()
 #endif
 
 #include "structures.h"
@@ -71,6 +72,7 @@ int main()
   // display_poses(search_node(&n,22));
   //int* a = search_node(&n,22);
 
+/*
   init_stack(0);
   DISPLAY_STACK();
   push_stack(1);
@@ -83,6 +85,14 @@ int main()
   pop_stack();
   pop_stack();
   DISPLAY_STACK();
+ */
+
+  init_queue(0);
+  DISPLAY_QUEUE();
+  in_queue(1);
+  in_queue(2);
+  in_queue(3);
+  DISPLAY_QUEUE();
   
 
   exit(EXIT_SUCCESS);

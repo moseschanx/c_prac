@@ -8,8 +8,10 @@
 typedef struct node {
     int data;
     struct node* next;
+    struct node* prev;
 
 }node;
+
 
 
 void init_list(node**,int);
@@ -74,6 +76,22 @@ int peek_stack();
 *  @return  
 */
 void display_stack();
+
+
+
+void init_queue(int data);
+
+void in_queue(int data);
+
+int de_queue();
+
+void clear_queue();
+
+bool is_queue_empty();
+
+int peek_queue();
+
+void display_queue();
 
 #ifdef __cplusplus
     }
