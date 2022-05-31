@@ -4,10 +4,19 @@
 
 #include "structures.h"
 
-void init_list(node** n , int data)
+void init_list(node** n_begin , int data)
 {
-    (*n)->next = NULL;
-    (*n)->data = data;
+    (*n_begin)->next = NULL;
+    (*n_begin)->data = data;
+}
+
+void clear_list(node** n_begin)
+{
+    if((*n_begin)==NULL){ free(*n_begin);return;}
+    node* ptr = (*n_begin)->next;
+    node* prev_ptr = *n_begin;
+    for(;ptr->next!=NULL;free(prev_ptr),prev_ptr->next=ptr,ptr=ptr->next);
+    free(ptr);
 }
 
 void insert_node_begin(node** n_begin,int data)
@@ -132,6 +141,28 @@ void display_list(node* n_begin)
     puts("list end reached !\n");
 
 }
+void display_list_backward(node* n_last)
+{
+    if(n_last->prev==NULL){
+        printf("node #1 , data : %d \n",n_last->data);
+        puts("list end reached !\n");
+        return;
+    } // If the linked list only has one node.
+
+
+    int pos = 1;
+    do{
+        printf("node #%d , data : %d \n",pos,n_last->data);
+        ++pos , n_last = n_last->prev;
+
+        
+    }while(n_last->prev!=NULL); // Print out nodes before the last node.
+    printf("node #%d , data : %d \n",pos,n_last->data); // Print the last node
+
+    puts("list end reached !\n");
+
+
+}
 
 node* stack_begin=NULL;
 node* stack_ptr=NULL;
@@ -162,6 +193,12 @@ int pop_stack()
     if(is_stack_empty()) return 0;
     int data = stack_ptr->data; 
 
+    if(stack_ptr->next==NULL)
+    {
+        free(stack_ptr);
+        stack_ptr = stack_begin = NULL;
+        return data;
+    }
     /* 
     *   
     */  
@@ -189,11 +226,13 @@ void clear_stack()
             free(prev_ptr);
 
     free(ptr);
+    // or you could just say :
+    //clear_list(&stack_begin);
 }
 
 bool is_stack_empty()
 {
-    return (stack_ptr->data==0&&stack_ptr->next==NULL) ? true : false;
+    return (stack_ptr==NULL) ? true : false;
 } 
 
 
@@ -201,6 +240,7 @@ void display_stack()
 {
     if(!is_stack_empty())
         display_list(stack_begin);
+    else puts("Stack now is empty.");
     return;
 }
 
@@ -211,34 +251,40 @@ void init_queue(int data)
 {
     node* new_node = (node*)malloc(sizeof(node));
     new_node->data = data;
-    new_node->next = NULL;
+    new_node->prev = NULL;
 
     queue_begin = new_node;
+    queue_ptr = new_node;
 
 }
 
 void in_queue(int data)
 {
     node* add_node = (node*)malloc(sizeof(node));
-    add_node->prev = NULL;
-    add_node->data =  data;
+    add_node->data = data;
+    add_node->prev = queue_ptr;
 
-    queue_ptr->prev = add_node;
     queue_ptr = add_node;
 }
 
 int de_queue()
 {
     // return data part
-    if(is_stack_empty()) return 0;
-    int data = queue_ptr->data; 
+    if(is_queue_empty()) return 0;
+    int data = queue_begin->data;
+    if(queue_ptr->prev==NULL)
+    {
+        free(queue_ptr);
+        queue_ptr = queue_begin = NULL;
+        return data;
+    } 
 
     /* 
     *   
     */  
-    node* ptr = queue_begin->prev;
-    node* prev_ptr = queue_begin;
-    for(;ptr->next!=NULL;prev_ptr=ptr,ptr=ptr->prev);
+    node* ptr = queue_ptr->prev;
+    node* prev_ptr = queue_ptr;
+    for(;ptr->prev!=NULL;prev_ptr=ptr,ptr=ptr->prev);
     free(ptr);
     prev_ptr->prev=NULL;
     queue_begin = prev_ptr;
@@ -252,17 +298,18 @@ void clear_queue()
     node* prev_ptr = queue_begin;
     node* ptr = queue_begin->prev;
 
-    for(;ptr->next!=NULL;prev_ptr=ptr,ptr=ptr->prev)
+    for(;ptr->prev!=NULL;prev_ptr=ptr,ptr=ptr->prev)
             free(prev_ptr);
 
     free(ptr);
+    queue_begin = queue_ptr = NULL;
 
 }
 
 bool is_queue_empty()
 {
 
-    return (queue_ptr->data==0&&queue_ptr->next==NULL) ? true : false;
+    return (queue_ptr==NULL) ? true : false;
 }
 
 int peek_queue()
@@ -273,7 +320,8 @@ int peek_queue()
 void display_queue()
 {
     if(!is_queue_empty())
-        display_list(queue_begin);
+        display_list_backward(queue_ptr);
+    else puts("Queue now is empty.");
     return;
 
 }

@@ -93,6 +93,15 @@ int main()
   in_queue(2);
   in_queue(3);
   DISPLAY_QUEUE();
+  de_queue();
+  de_queue();
+  DISPLAY_QUEUE();
+  de_queue();
+  DISPLAY_QUEUE();
+ //SEGFAULT POINT 
+  de_queue();
+  DISPLAY_QUEUE();
+  
   
 
   exit(EXIT_SUCCESS);
