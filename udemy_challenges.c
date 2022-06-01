@@ -1800,3 +1800,99 @@ exit(EXIT_SUCCESS);
 
 }
 
+// Section 19 Challenges
+/*
+
+  #1 Linked List 
+    test your understanding of linked list 
+    
+  Write a program that performs operations on a linked list 
+
+  You need to create a linked list that stores integers and uses pointers
+
+  Your program should perform the following operations 
+    Inseret node at first
+    Insert node at first
+    Insert node at position 
+    Delete node from any position 
+    Update node value 
+    Search Element in the linked list 
+    Display list
+    Exit
+
+  Your program should create a strructure that stores each nodes value and contains a next pointer
+
+  Your program can utilize global variables for previous , head, tail , temp , new nodes, etc 
+  or you can pass around data to function 
+    
+  #2 Implement Stack an queue
+
+  
+
+*/
+#ifdef DEBUG
+  #define DISPLAY_LIST(n) display_list(n)
+  #define DISPLAY_STACK() display_stack()
+  #define DISPLAY_QUEUE() display_queue()
+#endif
+
+#include "structures.h"
+int main()
+{
+
+/*
+  node* n = (node*)malloc(sizeof(node));  //cuz you want to change where the pointer points to 
+  init_list(&n,22);
+  DISPLAY_LIST(n);
+
+  insert_node_begin(&n,21);
+  DISPLAY_LIST(n);
+ 
+  insert_node_trail(&n,23);
+  DISPLAY_LIST(n);
+  insert_node_anypos(&n,2,32);
+  DISPLAY_LIST(n);
+  update_node(&n,3,22);
+  DISPLAY_LIST(n);
+ */
+
+  //printf("42 is at list position %d \n",*search_node(&n,42));
+  // display_poses(search_node(&n,22));
+  //int* a = search_node(&n,22);
+
+/*
+  init_stack(0);
+  DISPLAY_STACK();
+  push_stack(1);
+  push_stack(2);
+  
+  push_stack(3);
+  DISPLAY_STACK();
+  pop_stack();
+  pop_stack();
+  pop_stack();
+  pop_stack();
+  DISPLAY_STACK();
+ */
+
+  init_queue(0);
+  DISPLAY_QUEUE();
+  in_queue(1);
+  in_queue(2);
+  in_queue(3);
+  DISPLAY_QUEUE();
+  de_queue();
+  de_queue();
+  DISPLAY_QUEUE();
+  de_queue();
+  DISPLAY_QUEUE();
+ //SEGFAULT POINT 
+  de_queue();
+  DISPLAY_QUEUE();
+  
+  
+
+  exit(EXIT_SUCCESS);
+  
+}
+

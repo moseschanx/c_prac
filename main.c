@@ -1,3 +1,6 @@
+// Defining your macros here.
+#define __USE_POSIX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,103 +13,10 @@
 #include <ctype.h>
 #include <dlfcn.h>
 #include <time.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <signal.h>
 
-
-// Section 19 Challenges
-/*
-
-  #1 Linked List 
-    test your understanding of linked list 
-    
-  Write a program that performs operations on a linked list 
-
-  You need to create a linked list that stores integers and uses pointers
-
-  Your program should perform the following operations 
-    Inseret node at first
-    Insert node at first
-    Insert node at position 
-    Delete node from any position 
-    Update node value 
-    Search Element in the linked list 
-    Display list
-    Exit
-
-  Your program should create a strructure that stores each nodes value and contains a next pointer
-
-  Your program can utilize global variables for previous , head, tail , temp , new nodes, etc 
-  or you can pass around data to function 
-    
-  #2 Implement Stack an queue
-
-  
-
-*/
-#ifdef DEBUG
-  #define DISPLAY_LIST(n) display_list(n)
-  #define DISPLAY_STACK() display_stack()
-  #define DISPLAY_QUEUE() display_queue()
-#endif
-
-#include "structures.h"
-int main()
-{
-
-/*
-  node* n = (node*)malloc(sizeof(node));  //cuz you want to change where the pointer points to 
-  init_list(&n,22);
-  DISPLAY_LIST(n);
-
-  insert_node_begin(&n,21);
-  DISPLAY_LIST(n);
- 
-  insert_node_trail(&n,23);
-  DISPLAY_LIST(n);
-  insert_node_anypos(&n,2,32);
-  DISPLAY_LIST(n);
-  update_node(&n,3,22);
-  DISPLAY_LIST(n);
- */
-
-  //printf("42 is at list position %d \n",*search_node(&n,42));
-  // display_poses(search_node(&n,22));
-  //int* a = search_node(&n,22);
-
-/*
-  init_stack(0);
-  DISPLAY_STACK();
-  push_stack(1);
-  push_stack(2);
-  
-  push_stack(3);
-  DISPLAY_STACK();
-  pop_stack();
-  pop_stack();
-  pop_stack();
-  pop_stack();
-  DISPLAY_STACK();
- */
-
-  init_queue(0);
-  DISPLAY_QUEUE();
-  in_queue(1);
-  in_queue(2);
-  in_queue(3);
-  DISPLAY_QUEUE();
-  de_queue();
-  de_queue();
-  DISPLAY_QUEUE();
-  de_queue();
-  DISPLAY_QUEUE();
- //SEGFAULT POINT 
-  de_queue();
-  DISPLAY_QUEUE();
-  
-  
-
-  exit(EXIT_SUCCESS);
-  
-}
 
 // Section 20 Challenge.
 /*
@@ -146,8 +56,7 @@ int main()
       ctrl-c sends the process an interrupt signal that makes the program display the final 
       score and then exit()
 
-    the second time , wait for at least five seconds on one of the answer and see what happens
-      the alarm signal ( SIGALRM ) should occur
+       the alarm signal ( SIGALRM ) should occur
         the program was waiting for the user to enter an answer , but because he took so long, the timer signal wa sent
         program should ouput "time's up " and then raise the SIGINT signal which causes the progam to display the final score
 
@@ -169,13 +78,36 @@ int main()
         any process may get CPU assigned ,at some quantum time
         also . the process id may differ during different executions
 
-
-
-
-
-
-
 */
+#ifdef DEBUG
+  #define PRINTF(...) printf(__VA_ARGS__)
+#endif
+
+volatile sig_atomic_t gSignalStatus;
+
+// void (*signal(int , void (*handler)(int))) (int);
+
+void signal_handler(int signal)
+{
+
+    puts("Interrupted");
+
+}
+
+int main()
+{
+
+  signal(SIGINT, signal_handler);
+  
+  __pid_t iPid = getpid();
+  if(!kill(iPid , SIGINT))
+    puts("signal sent successfully");
+
+  
+
+
+
+}
 
 // Section 21 Challenge
 /*
