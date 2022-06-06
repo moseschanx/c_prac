@@ -50,7 +50,7 @@ $(TARGET) : main.o libstructures.so
 	$(LD)  -o  $@ $< -L. -lstructures $(LDFLAGS)
 
 main.o : main.c
-	$(CC) $(CCFLAGS) -DDEBUG -c -o $@ $<
+	$(CC) $(CCFLAGS) -c -o $@ $<
 
 libstructures.so : structures.c
 	$(CC) -fPIC -shared -std=c99 -g -O0 -o $@ $^

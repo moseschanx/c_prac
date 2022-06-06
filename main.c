@@ -1,5 +1,4 @@
 // Defining your macros here.
-#define __USE_POSIX
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -90,23 +89,48 @@ volatile sig_atomic_t gSignalStatus;
 void signal_handler(int signal)
 {
 
-    puts("Interrupted");
+  printf("\nInterrupt signal ( %d ) received.\n",signal);
+  puts("number found");
+  char choice;
+  printf("Do you wish to continue ? ( y/n )");
+  if(getchar == 'y')
+  ;
+  else
+    exit(EXIT_SUCCESS);
 
 }
 
 int main()
 {
-
-  signal(SIGINT, signal_handler);
   
-  __pid_t iPid = getpid();
-  if(!kill(iPid , SIGINT))
-    puts("signal sent successfully");
+  srand(clock());
+
+  void (*sigHandler_return)(int);
+  sigHandler_return = signal(SIGINT, signal_handler);
 
   
 
 
+  int x;
+  for(int i=1;i<=100;++i)
+  {
+    x = 1 + rand() % 50;
+    printf("%d ",x);
+    if(x == 25) raise(SIGINT);
+    if(i%10 == 0) puts("");
+  }
 
+
+  if(sigHandler_return == SIG_ERR){
+    perror("Signal Error:");
+    exit(EXIT_FAILURE);
+  }
+
+  return 0;
+
+  
+  
+  //pid_t iPid = getpid(); raise(SIGSTOP);
 }
 
 // Section 21 Challenge
