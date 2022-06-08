@@ -123,6 +123,7 @@
   */
   // Try your self with the classic exmaple  "dead lock"
 
+/*
 pthread_attr_t attr1;
 void* func1(void* param);
 void* func2(void* param);
@@ -147,6 +148,7 @@ int main()
   pthread_exit(NULL);
 
 }
+*/
 
 // Section 22 Challenge 
 /*
@@ -177,9 +179,11 @@ int main()
 #include <netinet/in.h>     //Contains constants and structures needed for internet domain addresses
 #include <netdb.h>          //Defines the structure hostent
 #include <arpa/inet.h>      // defines in_addr structure
+#include <sys/time.h>
 
 //The following functions are provided to fetch service name from the /etc/services file
 
+/*
 struct servent* getservbyname(char* name , char* proto)
   // takes a service name and a protocol name and returns the corresponding port number for that service
 
@@ -242,6 +246,8 @@ struct hostent{  // hostent is a structure is used to keep information related t
   
   #define h_addr h_addr_list[0]
 }
+
+*/
 
 // Steps in using sockets to communicte 
 /*
@@ -384,8 +390,11 @@ struct hostent{  // hostent is a structure is used to keep information related t
 
 */
 
-int bindCreateSocket(int hSocket);
 short socketCreate(void);
+int bindCreateSocket(int hSocket);
+int socketSend(int hSocket , char* Rq , short lenRq);
+int socketReceive(int hSocket , char* Rsvp , short lenRsv);
+int socketConnect(int );
 
 int main()
 {
@@ -433,7 +442,10 @@ int main()
 
       //receive a reply from the client 
       if((recv(sock , client_message , 200 , 0))<0)
-        perror("receive failed ") , break;
+      {
+        perror("receive failed ");
+        break;
+      }
 
       printf("client reply : %s\n",client_message);
 
@@ -456,7 +468,7 @@ int main()
 
       
 }
-int main()
+int client_main()
 {
   //create a client
   int hSocket = 0 , readSize = 0;
@@ -482,7 +494,7 @@ int main()
   socketSend(hSocket,send_to_server,strlen(send_to_server));
 
   //receive the data from the server 
-  readSize = socketReceive(hostent,server_reply,200) ;
+  readSize = socketReceive(hSocket,server_reply,200) ;
   printf("Reply from server : %s \n",server_reply);
   
   close(hSocket);
@@ -514,7 +526,7 @@ int bindCreateSocket(int hSocket)
   
 }
 
-int socketConnect(hSocket)
+int socketConnect(int hSocket)
 {
   int iRetval = -1;
   int ServerPort = 12345;
@@ -537,7 +549,7 @@ int socketSend(int hSocket , char* Rq , short lenRq)
   tv.tv_usec = 0;
 
   if(setsockopt(hSocket , SOL_SOCKET , SO_SNDTIMEO , (char*)&tv , sizeof(tv))<0)
-    perror("send failure : time out") , eixt(EXIT_FAILUREl);
+    perror("send failure : time out") , exit(EXIT_FAILURE);
 
   shortRetval = send(hSocket,Rq,lenRq,0);
 
@@ -553,7 +565,7 @@ int socketReceive(int hSocket , char* Rsvp , short lenRsv)
   tv.tv_usec = 0;
 
   if(setsockopt(hSocket , SOL_SOCKET , SO_RCVTIMEO, (char*)&tv , sizeof(tv))<0)
-    perror("receive failure : time out") , eixt(EXIT_FAILUREl);
+    perror("receive failure : time out") , exit(EXIT_FAILURE);
 
   shortRetval = recv(hSocket,Rsvp,lenRsv,0);
   printf("Response : %s ",Rsvp);
