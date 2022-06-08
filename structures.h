@@ -12,6 +12,13 @@ typedef struct node {
 
 }node;
 
+typedef struct tree_node {
+    int data;
+    struct tree_node* parent;
+    struct tree_node* lchild;
+    struct tree_node* rchild;
+
+} tree_node;
 
 // List
 void init_list(node**,int);

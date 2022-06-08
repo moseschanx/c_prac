@@ -15,123 +15,11 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
+#include <errno.h>
+
+#include <pthread.h>
 
 
-// Section 20 Challenge.
-/*
-
-  #1
-    test your understanding of signals 
-
-    Specifically , your progam will :
-      raise signals 
-      catch singals 
-      use the alarm function to raise a signal 
-
-    Write a program that will test a user's multiplication skills 
-      the progam will ask the user to work on an answer to simple multiplication progam
-      keep track of how many answers are correct
-
-    The program will keep running forever , unless
-      the user presses Ctrl-C OR
-      the user takes more than 5 seconds to answer the question 
-
-    When the program ends, it will display the final score ( number of answer correct )
-
-
-        Do some modification / addition to Challenge1_starter_code.c
-
-          You will need to add code for the following
-            The program needs to handle the user pressing Ctrl+C
-              will need to handle this signal using the signal or sigaction functions
-          
-            The program needs to raise a signal if the user does not answer a question within 5 seconds
-              use the alarm function and catch the SIGALRM singal.
-
-  #1 ( Testing )
-    To test the progam , you will need to run it a couple of times 
-
-    the first time , you should answer a few questions and then hit CTRL+C
-      ctrl-c sends the process an interrupt signal that makes the program display the final 
-      score and then exit()
-
-       the alarm signal ( SIGALRM ) should occur
-        the program was waiting for the user to enter an answer , but because he took so long, the timer signal wa sent
-        program should ouput "time's up " and then raise the SIGINT signal which causes the progam to display the final score
-
-  
-  #2
-    test your understanding of forking a process 
-
-    write a program to create one parent with three children processes ( four processes)
-      must use the fork() function
-
-    your program should contain output that identifies each parent and each child 
-      will need to write if statements to check process id's returned from the fork() call,
-      so that the output information is correct
-        parent , first child , second child , third child 
-        utilize the gepid() and getppid() functions to display each process id
-
-      at some instance of time , it is not necessary that child process will execute first or parent 
-      process will be first allotted CPU
-        any process may get CPU assigned ,at some quantum time
-        also . the process id may differ during different executions
-
-*/
-#ifdef DEBUG
-  #define PRINTF(...) printf(__VA_ARGS__)
-#endif
-
-volatile sig_atomic_t gSignalStatus;
-
-// void (*signal(int , void (*handler)(int))) (int);
-
-void signal_handler(int signal)
-{
-
-  printf("\nInterrupt signal ( %d ) received.\n",signal);
-  puts("number found");
-  char choice;
-  printf("Do you wish to continue ? ( y/n )");
-  if(getchar == 'y')
-  ;
-  else
-    exit(EXIT_SUCCESS);
-
-}
-
-int main()
-{
-  
-  srand(clock());
-
-  void (*sigHandler_return)(int);
-  sigHandler_return = signal(SIGINT, signal_handler);
-
-  
-
-
-  int x;
-  for(int i=1;i<=100;++i)
-  {
-    x = 1 + rand() % 50;
-    printf("%d ",x);
-    if(x == 25) raise(SIGINT);
-    if(i%10 == 0) puts("");
-  }
-
-
-  if(sigHandler_return == SIG_ERR){
-    perror("Signal Error:");
-    exit(EXIT_FAILURE);
-  }
-
-  return 0;
-
-  
-  
-  //pid_t iPid = getpid(); raise(SIGSTOP);
-}
 
 // Section 21 Challenge
 /*
@@ -225,6 +113,41 @@ int main()
         
 */
 
+  // Knwon problems : 
+  /*
+  pthread_detach 
+  pthread_cancel 
+  pthread_compare 
+  pthread_once
+  pthread_broadcast
+  */
+  // Try your self with the classic exmaple  "dead lock"
+
+pthread_attr_t attr1;
+void* func1(void* param);
+void* func2(void* param);
+
+int main()
+{
+
+  size_t stack_size;
+  pthread_t thread1 , thread2;
+
+  pthread_attr_init(&attr1);
+  pthread_attr_getstacksize(&attr1,&stack_size);
+  pthread_attr_setstacksize(&attr1,stack_size*2);
+
+  
+  pthread_create(&thread1,atr1,func1,NULL);
+  pthread_create(&thread2,atr1,func2,NULL);
+
+  pthread_join(&thread1);
+  pthread_join(&thread2);
+
+  pthread_exit(NULL);
+
+}
+
 // Section 22 Challenge 
 /*
     #1
@@ -247,3 +170,394 @@ int main()
 
 
 */
+
+
+#include <sys/types.h>      //Contains definitions of a number of datatypes used in socket calls
+#include <sys/socket.h>     //The main socket header file , includes a number of definitions of structures needed for sockets (socket creation , accept , listen , bind , send , recv ,etc)
+#include <netinet/in.h>     //Contains constants and structures needed for internet domain addresses
+#include <netdb.h>          //Defines the structure hostent
+#include <arpa/inet.h>      // defines in_addr structure
+
+//The following functions are provided to fetch service name from the /etc/services file
+
+struct servent* getservbyname(char* name , char* proto)
+  // takes a service name and a protocol name and returns the corresponding port number for that service
+
+struct servent* getservbyport(int port , char* proto)
+  //takes a port number and a protocol name and returns the corresponding service name  
+
+//the returned structure : 
+  struct servent{
+    char* s_name;
+    char** s_alias;
+    int s_port;
+    char* s_proto;
+  }
+// IP address functionality 
+
+int inet_aton(const char* strptr , struct in_addr* addrptr)
+  //converts the specified string , in the internet standard dot domain , to a network address
+  // and stores the address in the structure provided
+
+in_addr_t inet_addr(const char* strptr)
+  //converts the specified string , in the internet standard dot notation , to an integer 
+  //value suitable for use as an internet address
+
+char* inet_ntoa(struct in_addr inaddr)
+  //converts the specified internet host address to string in the internet standard dot notation
+
+
+struct sockaddr{ // holds socket information 
+//  this is a generic socket address structure , which will be passed in most of the 
+//  socket function calls
+
+  unsigned short sa_family;
+  char           sa_data[14];
+};
+// sa_family can be the following , AF_INET , AF_UNIX , AF_NS , AF_IMPLINK
+  // represents and address family 
+  // in most of the internet-based applications , we use AF_INET
+
+// sa_data is a protocol-specific address
+  // we will use port number IP address , which is represented by sockaddr_in structure
+
+struct sockaddr_in{ // helps you to reference to the socket's elements
+  short int   sin_family;
+  unsigned short int sin_port;
+  struct in_addr sin_addr;
+  unsigned char  sin_zero[8];
+};
+
+// in addr is used only in the above structure as a structure field and holds the 32bit netid/hostid
+struct in_addr{
+  unsigned long s_addr;
+};
+
+struct hostent{  // hostent is a structure is used to keep information related to host
+  char* h_name;
+  char** h_aliases;
+  int h_addrtype;
+  int h_length;
+  char** h_addr_list;
+  
+  #define h_addr h_addr_list[0]
+}
+
+// Steps in using sockets to communicte 
+/*
+    create a new socket for network communication (socket)
+         to perform network io , the first thing a process must do is 
+         call the socket function 
+         specifying the type of communication protocol desired and protocol family
+              int socket(int family , int type , int protocol)
+                family  : specifies the protocol family and is usually the constant 
+                          AF_INET for IPV4 protocols and AF_INETc for IPV6 protocols
+                type    : specifies the kind of socket you want , and this is usually set to
+                          SOCK_STREAM for a stream socket or SOCK_DGRAM for a datagram socket
+                protocol : set the specific prottocol type you're using 
+                          IPPROTO_TCP - TCP transport protocol
+                          IPPROTO_UDP - UDP transport protocol
+                          IPPROTO_SCTP - SCTP transport protocol
+                      returns a socket descriptor that you can use in later system calls or -1 on error
+
+              int setsockopt(int sockfd , int level , int optname , const void* optval ,socklen_t optlen);
+                  helps manipulating options for the socket referred to by the file descriptor sockfd
+                    completely optional , but it helps in reuse of address and port
+                    prevents error sucha as :  "address already in use"
+
+
+    attach a local address to a socket (bind)
+        when a server starts up , it needs to tell the operating system which port it's gonna use
+          called binding the port
+        once  a server has create da socket and named it with bind() giving it an IP address and port number,
+        should any program anywhere on the network give that same name to the connect() function,
+        that program will find the server program and they will link up.
+
+        int bind(int sockfd , struct sockaddr* my_addr , int addrlen);
+          sockfd : a socket descriptor returned by the socket function
+          my_addr : a pointer to struct sockaddr that contains the local IP address and port
+            a 0 value for port number means that the system will choose a random port,
+            and INADDR_ANY value for IP address means the server's IP address will be assigned automatically
+          addrlen : is set to sizeof( struct sockaddr )
+        
+        returns 0 if it successfully binds to the address , otherwise it retruns -1 on error
+
+
+
+    announce willingness to accept connections (listen)
+              tells the OS how long you want the queue to be
+              int listen(int sockfd , int backlog);
+                sockfd : a socket descriptor returned by the socket function
+                backlog : the max number of allowed connections
+              retruns 0 on success , otherwise it retruns -1 on error
+
+    block caller until a connection request arrives (accept)
+              once you have bound a port and set up a listen queue , you then just have to ... wait
+              servers spend most of their lives waiting for clients to contact them
+              the accept() system calls waits until a client contancts the server , and then it 
+              returns a second socket descriptor that you can use to hold a conversation on
+
+            int accept ( int sockfd , struct sockaddr* cliaddr, socklen_t*addrlen);
+                sockfd : a socket descriptor returned by the socket function
+                cliaddr is a pointer to struct sockaddr that contains client IP address and port
+                addrlen  : is set to sizeof(struct sockaddr)
+            returns a non-negative descriptor on success , otherwise it retruns -1 on error
+                all read-write operations will be done on this descriptor to communicate with the client
+
+
+    actively attempt to establish a connection (connect)
+
+              int connect(int sockfd ,strct sockaddr* serv_addr , int addrlen);
+                  used by a TCP client to establish a connection with a TCP server
+                sockfd :a socket decriptor returned by the socket function
+                serv_addr : a pointer to struct sockaddr that contains destination IP address and port
+                addrlen  : is set to sizeof(struct sockaddr)
+
+              retruns 0 if sucessfully connect to the server , otherwise it returns -1 on error
+
+
+    send some data over connection ( send)
+
+              used to send data over stream sockets or connectedd datagram sockets
+                for unconnected datagram sockets , use sendto() function
+                
+              int send(int sockfd ,const void* msg ,  int len , int flags);
+                sockfd  : a socket descriptor returned by the socket function
+                msg     : a pointer to the data you want to send
+                len     : the length of the data you want to send ( in bytes)
+                flags should be set to 0
+                returns the number of bytes sent out , otherwise it will return -1 on error.
+
+              int sendto(int sockfd , const void* msg , int len , unsigned int flags , const struct sockaddr* to , int tolen);
+                to : a pointer to struct sockadr for the host where data has to be sent 
+                tolen : should be set sizeof(struct sockaddr)
+              returns the number of bytes sent , otherwise it returns -1 on error
+
+            
+
+
+    receive some data over connection ( receive )
+
+              int recv(int sockdf , void* buf , int len , unsigned int flags);
+                sockfd : a socket descriptor returned by the socket function
+                buf    : the buffer to read the information into
+                len    : maximum length of the buffer
+                flags  : usually set to 0
+              returns the number of bytes read in to the buffer , otherwise it will return -1 on error
+
+            
+
+    release the conenction (close )
+            the shutdown functon is used to gracefully close the communication between the client and sever
+            gives more control 
+
+            int shutdown(int sockfd , int how);
+              how : 0 : receiving is not allowd
+                    1 : sending is not allowed
+                    2 : both sending and receiving are not allowed
+                    when how is set to 2 , it's the same thing as close()
+
+          
+
+
+    write :
+            the write function attempts to write nbyte bytes from the buffer pointed by buf to the 
+            file associated with the open file descriptor , dildes
+  
+            int write(int dildes , const void* buf , int nbyte);
+              fildes : a socket descriptor returned byt the socket function
+              buf    : a pointer to the data you want to send
+              nbyte  : number of bytes to be written
+
+            returns the number of bytes actually written to the file associated with fildes if successful
+            otherwise , -1 is returned 
+    read :
+            attempts to read n byte bytes from the file associated with the buffer , fildes , into the buffer pointed to by buf
+
+            int read( int fildes , const void* buf , int nbyte);
+              buf : the buffer to read information into.
+
+            returns the number of bytes actuall writen into ..... otherwise returns -1
+
+
+
+
+*/
+
+int bindCreateSocket(int hSocket);
+short socketCreate(void);
+
+int main()
+{
+    // Createing a server 
+
+    int socket_desc = 0 , sock = 0 , clientLen = 0;
+    struct sockaddr_in client;
+    char client_message[200] = {0};
+    char message[100] = {0};
+    const char* pMessage = "hello from Jason's server";
+
+    //Create socket
+    if((socket_desc = socketCreate()) == -1)
+      perror("Could not create socket!") , exit(EXIT_FAILURE);
+
+    puts("socket created!");
+
+
+    //bind
+    if(bindCreateSocket(socket_desc) < 0)
+      perror("bind failed!") , exit(EXIT_FAILURE);
+    
+    puts("bind sucess!");
+
+    //listen
+    listen(socket_desc,3);
+
+
+    //accept and incoming connection
+    while(1)
+    {
+      puts("Waiting for incoming connections ... ");
+      clientLen = sizeof(struct sockaddr_in);
+
+      // acccept connection from an incomming client
+      sock = accept(socket_desc , (struct sockaddr*)&client , (socklen_t*)&clientLen);
+
+      if(sock < 0)
+        perror("accept failed") , exit(EXIT_FAILURE);
+
+      puts("connection accepted");
+
+      memset(client_message, '\0',sizeof(client_message));
+      memset(message , '\0', sizeof(message));
+
+      //receive a reply from the client 
+      if((recv(sock , client_message , 200 , 0))<0)
+        perror("receive failed ") , break;
+
+      printf("client reply : %s\n",client_message);
+
+      if(!strcmp(pMessage,client_message))
+        strcpy(message,"Hi , there");
+      else
+        strcpy(message , "Invalid Message");
+
+      // send some data
+      if(send(sock,message,strlen(message),0) < 0)
+        perror("send failed!") , exit(EXIT_FAILURE);
+
+      close(sock);
+      sleep(1);
+
+      
+    }
+
+    exit(EXIT_SUCCESS);
+
+      
+}
+int main()
+{
+  //create a client
+  int hSocket = 0 , readSize = 0;
+  struct sockaddr_in server;
+  char send_to_server[100] = {0};
+  char server_reply [200] = {0};
+
+  //create a socket 
+  if((hSocket = socketCreate())==-1)
+    perror("Could not create socket") , exit(EXIT_FAILURE);
+
+  puts("Socket is created");
+
+  //connect to remote server
+  if(socketConnect(hSocket)<0)
+    perror("connect failed ") , exit(EXIT_FAILURE);
+
+  puts("Successfully connected with server ");
+  printf("Enter your messages:");
+  fgets(send_to_server , 100 , stdin);
+
+  //send message to server 
+  socketSend(hSocket,send_to_server,strlen(send_to_server));
+
+  //receive the data from the server 
+  readSize = socketReceive(hostent,server_reply,200) ;
+  printf("Reply from server : %s \n",server_reply);
+  
+  close(hSocket);
+
+
+}
+
+short socketCreate(void)
+{
+  short hSocket = 0;
+  printf("Create the socket \n");
+  hSocket  = socket(AF_INET , SOCK_STREAM , IPPROTO_IP);
+  return hSocket;
+}
+
+int bindCreateSocket(int hSocket)
+{
+  int iRetval = -1;
+  int clientPort = 12345;
+
+  struct sockaddr_in remote = {0};
+  remote.sin_family = AF_INET;
+
+  remote.sin_addr.s_addr = htonl(INADDR_ANY);
+  remote.sin_port = htons(clientPort);
+
+  iRetval = bind(hSocket,(struct sockaddr*)&remote , sizeof(remote));
+  return iRetval;
+  
+}
+
+int socketConnect(hSocket)
+{
+  int iRetval = -1;
+  int ServerPort = 12345;
+
+  struct sockaddr_in remote = {0};
+  remote.sin_addr.s_addr = inet_addr("127.0.0.1");
+  remote.sin_family = AF_INET;
+  remote.sin_port = htons(ServerPort);
+
+  iRetval = connect(hSocket ,(struct sockaddr*)&remote , sizeof(remote));
+  return iRetval;
+
+}
+
+int socketSend(int hSocket , char* Rq , short lenRq)
+{
+  int shortRetval = -1;
+  struct timeval tv;
+  tv.tv_sec = 20;
+  tv.tv_usec = 0;
+
+  if(setsockopt(hSocket , SOL_SOCKET , SO_SNDTIMEO , (char*)&tv , sizeof(tv))<0)
+    perror("send failure : time out") , eixt(EXIT_FAILUREl);
+
+  shortRetval = send(hSocket,Rq,lenRq,0);
+
+  return shortRetval;
+
+}
+
+int socketReceive(int hSocket , char* Rsvp , short lenRsv)
+{
+  int shortRetval = -1;
+  struct timeval tv;
+  tv.tv_sec = 20;
+  tv.tv_usec = 0;
+
+  if(setsockopt(hSocket , SOL_SOCKET , SO_RCVTIMEO, (char*)&tv , sizeof(tv))<0)
+    perror("receive failure : time out") , eixt(EXIT_FAILUREl);
+
+  shortRetval = recv(hSocket,Rsvp,lenRsv,0);
+  printf("Response : %s ",Rsvp);
+
+  return shortRetval;
+
+}

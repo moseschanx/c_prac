@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <setjmp.h>
 #include <dlfcn.h>
+#include <pthread.h>
 
 // Challenge #1 ( using variable length arrays )
 
@@ -1896,3 +1897,374 @@ int main()
   
 }
 
+
+// Section 20 Challenge.
+/*
+
+  #1
+    test your understanding of signals 
+
+    Specifically , your progam will :
+      raise signals 
+      catch singals 
+      use the alarm function to raise a signal 
+
+    Write a program that will test a user's multiplication skills 
+      the progam will ask the user to work on an answer to simple multiplication progam
+      keep track of how many answers are correct
+
+    The program will keep running forever , unless
+      the user presses Ctrl-C OR
+      the user takes more than 5 seconds to answer the question 
+
+    When the program ends, it will display the final score ( number of answer correct )
+
+
+        Do some modification / addition to Challenge1_starter_code.c
+
+          You will need to add code for the following
+            The program needs to handle the user pressing Ctrl+C
+              will need to handle this signal using the signal or sigaction functions
+          
+            The program needs to raise a signal if the user does not answer a question within 5 seconds
+              use the alarm function and catch the SIGALRM singal.
+
+  #1 ( Testing )
+    To test the progam , you will need to run it a couple of times 
+
+    the first time , you should answer a few questions and then hit CTRL+C
+      ctrl-c sends the process an interrupt signal that makes the program display the final 
+      score and then exit()
+
+       the alarm signal ( SIGALRM ) should occur
+        the program was waiting for the user to enter an answer , but because he took so long, the timer signal wa sent
+        program should ouput "time's up " and then raise the SIGINT signal which causes the progam to display the final score
+
+  
+  #2
+    test your understanding of forking a process 
+
+    write a program to create one parent with three children processes ( four processes)
+      must use the fork() function
+
+    your program should contain output that identifies each parent and each child 
+      will need to write if statements to check process id's returned from the fork() call,
+      so that the output information is correct
+        parent , first child , second child , third child 
+        utilize the gepid() and getppid() functions to display each process id
+
+      at some instance of time , it is not necessary that child process will execute first or parent 
+      process will be first allotted CPU
+        any process may get CPU assigned ,at some quantum time
+        also . the process id may differ during different executions
+
+*/
+int score = 0;
+
+void end_game() {
+
+   printf("\nFinal score: %d\n", score);
+   exit(0); 
+}
+void alarm_end(){
+
+  printf("Time is up !");
+   printf("Final score: %d\n", score);
+   exit(0); 
+  
+}
+
+void error(char *msg)
+{
+   fprintf(stderr, "%s: %s\n", msg, strerror(errno));
+   exit(1);
+}
+
+int main() {
+
+   srand (time(0));
+   signal(SIGINT , end_game);
+   signal(SIGALRM , alarm_end);
+
+   
+   while(1) {
+      int a = rand() % 11;
+      int b = rand() % 11;
+
+      char txt[4];
+      alarm(5);
+    
+      printf("\nWhat is %d times %d: ", a, b);
+      fgets(txt, 4, stdin);
+
+      int answer = atoi(txt);
+
+      if(answer == a * b)
+         score++;
+      else
+         printf("\nWrong! Score: %d\n", score);
+    }
+
+    return 0;
+} 
+ 
+ int main()
+ {
+   pid_t pid;
+
+  printf("Parent : %d \n",getpid());
+
+  pid = fork();
+  if(pid == 0)
+    printf("Child1 : %d \n",getpid()) , exit(EXIT_SUCCESS);
+
+  pid = fork();
+  if(pid == 0)
+    printf("Child2 : %d \n",getpid()) , exit(EXIT_SUCCESS);
+  
+  pid = fork();
+  if(pid == 0)
+    printf("Child3 : %d \n",getpid()) , exit(EXIT_SUCCESS);
+  
+
+ }
+
+#include <unistd.h> 
+#include <stdio.h> 
+  
+int main() 
+{ 
+    // Creating first child 
+    int n1 = fork(); 
+  
+    // Creating second child. First child also executes this line and creates grandchild. 
+    int n2 = fork(); 
+  
+
+    /*
+        There is four circumstances  :
+            1.  (n1 > 0 && n2 > 0)  parent 
+            2.  (n1 == 0 && n2 > 0) first child   
+            3.  (n1 > 0 && n == 0)  second child
+            4.  (n1 == 0 && n2 == 0) third child
+
+    */
+
+    if (n1 > 0 && n2 > 0)  // In the outermost parent process 
+    { 
+        printf("parent\n"); 
+        printf("%d %d \n", n1, n2); 
+        printf("   my id is %d \n", getpid()); 
+        printf("   my parentid is %d \n", getppid()); 
+    } 
+    else if (n1 == 0 && n2 > 0)  
+    { 
+        printf("\nFirst child\n"); 
+        printf("%d %d \n", n1, n2); 
+        printf("   my id is %d  \n", getpid()); 
+        printf("   my parentid is %d \n", getppid()); 
+    } 
+    else if (n1 > 0 && n2 == 0) 
+    { 
+        printf("\nsecond child\n"); 
+        printf("%d %d \n", n1, n2); 
+        printf("   my id is %d  \n", getpid()); 
+        printf("   my parentid is %d \n", getppid()); 
+    } 
+    else { 
+        printf("\nthird child\n"); 
+        printf("%d %d \n", n1, n2); 
+        printf("   my id is %d \n", getpid()); 
+        printf("   my parentid is %d \n", getppid()); 
+    } 
+  
+    return 0; 
+} 
+
+
+
+
+//Bin tree exampel code 
+
+struct treeNode{
+    int data;
+    struct treeNode *leftPtr;
+    struct treeNode *rightPtr;
+};
+
+
+typedef struct treeNode TreeNode;
+typedef TreeNode* TreeNodePtr;
+
+void insertNode( TreeNodePtr* treePtr, int value);
+void inOrder( TreeNodePtr treePtr);
+void preOrder( TreeNodePtr treePtr);
+void postOrder(TreeNodePtr treePtr);
+
+int main()
+{
+  int i = 0;
+  int item = 0;
+  TreeNodePtr rootPtr = NULL;
+
+  srand(time(NULL));
+  printf("The numbers being places in the tree are : \n");
+
+  for(i = 1;i<=10;++i){
+    item = rand() % 15;
+    printf("%3d",item);
+    insertNode(&rootPtr , item);
+
+  }
+
+  /* traverse the tree preOrder */
+  printf("\n\nThe preOrder traversal is : \n");
+  preOrder(rootptr);
+
+  /* traverse the tree inOrder */
+  printf("\n\nThe inOrder traversal is : \n");
+  inOrder(rootPtr);
+
+  /* traverse the tree postOrder*/
+  printf("\n\nThe inOrder traversal is : \n");
+  postOrder(rootPtr);
+
+  return 0;
+
+}
+
+void insertNode(TreeNodePtr* treePtr , int value)
+{
+
+  if(*treePtr == NULL)
+  {
+    *treePtr = malloc(sizeof(TreeNode));
+
+    /* if memory was allocated then assign data */
+      if(*treePtr != NULL)
+      {
+        (*treePtr) -> data = value;
+        (*treePtr) -> leftPtr = NULL;
+        (*treePtr) -> rightPtr = NULL;
+      }
+      else{
+        printf("%d not inserted. No memory available.\n" , value);
+      }
+  }else
+  {
+    if( value < (*treePtr) -> data)
+    {
+      insertNode(&((*treeptr)->leftPtr),value);
+    }
+    else if ( value > (*treePtr) -> data )
+    {
+
+      insertNode(&((*treePtr)->rightPtr), value);
+
+    }else
+    {
+      puts("duplicated ");
+    }
+  }
+
+}
+
+void inOrder( TreeNodePtr treeptr )
+{
+
+  if( treeptr != NULL)
+  {
+    inOrder ( treeptr->leftptr);
+    printf("%3d",treeptr->data);
+    inOrder( treeptr -> rightPtr);
+  }
+  
+
+
+}
+void preOrder( TreeNodePtr treeptr )
+{
+
+  if(treeptr != NULL)
+  {
+    printf("%3d",treeptr->data);
+    preOrder(treeptr->leftPtr);
+    preOrder(treeptr->rightPtr);
+ }
+
+
+}
+void postOrder( TreeNodePtr treeptr )
+{
+
+  if(treeptr != NULL)
+  {
+    preOrder(treeptr->leftPtr);
+    preOrder(treeptr->rightPtr);
+    printf("%3d",treeptr->data);
+ }
+
+
+}
+
+
+// Condition Variable example code
+pthread_mutex_t count_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t condition_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t  condition_cond = PTHREAD_COND_INITIALIZER;
+
+
+void* functionCount1();
+void* functionCount2();
+int count = 0;
+
+#define COUNT_DONE 10
+#define COUNT_HALT1 3
+#define COUNT_HALT2 6
+
+int main()
+{
+  pthread_t thread1 , thread2;
+
+  pthread_create(&thread1,NULL,functionCount1,NULL);
+  pthread_create(&thread2,NULL,functionCount1,NULL);
+
+  exit(EXIT_SUCCESS);
+
+}
+
+void* functionCount1()
+{
+
+  for(;;)
+  {
+    pthread_mutex_lock(&condition_mutex);
+    while(count>=COUNT_HALT1 && count <= COUNT_HALT2)
+      pthread_cond_wait(&condition_cond,&condition_mutex);
+
+    pthread_mutex_unlock(&condition_mutex);
+    pthread_mutex_lock(&count_mutex);
+    ++count;
+    printf("Counter value functionCount1 : %d \n",count);
+
+    if(count >= COUNT_DONE) return NULL;
+  }
+}
+
+void* functionCount2()
+{
+
+  for(;;)
+  {
+    pthread_mutex_lock(&condition_mutex);
+    while(count < COUNT_HALT1 && count > COUNT_HALT2)
+      pthread_cond_signal(&condition_mutex);
+
+    pthread_mutex_unlock(&condition_mutex);
+    pthread_mutex_lock(&count_mutex);
+    ++count;
+    printf("Counter value functionCount2 : %d \n",count);
+
+    if(count >= COUNT_DONE) return NULL;
+  }
+}

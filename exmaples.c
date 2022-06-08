@@ -246,3 +246,214 @@ int find_max(int nums[],int len)
   }
   return max_num;
 }
+
+#ifdef DEBUG
+  #define PRINTF(...) printf(__VA_ARGS__)
+#endif
+
+volatile sig_atomic_t gSignalStatus;
+
+// void (*signal(int , void (*handler)(int))) (int);
+
+static void hdl( int sig , siginfo_t* siginfo , void* context)
+{
+
+  printf("Signal ID %d \n",sig);
+  printf("Siginfo : si_signo %d \n",siginfo->si_signo);
+  printf("Siginfo : si_errorno %d \n",siginfo->si_errno);
+  printf("Siginfo : si_code %d \n",siginfo->si_code);
+  printf("Siginfo : si_pid %d \n",siginfo->si_pid);
+  printf("Siginfo : si_uid %d \n",siginfo->si_uid);
+  printf("Siginfo : si_status %d \n",siginfo->si_status);
+  printf("Siginfo : si_addr %d \n",siginfo->si_addr);
+  /*
+  printf("Siginfo : si_signo %d \n",siginfo->si_signo);
+  printf("Siginfo : si_signo %d \n",siginfo->si_signo);
+  printf("Siginfo : si_signo %d \n",siginfo->si_signo);
+  */
+
+}
+
+void signal_handler(int signal)
+{
+
+  printf("\nInterrupt signal ( %d ) received.\n",signal);
+
+}
+void childProcess();
+void parentProcess();
+int main()
+{
+  
+/*
+    struct sigaction sa , old_sa;
+
+    sa.sa_handler = signal_handler;
+    
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGINT , NULL , &old_sa);
+    // Check if any of those signals in the past we're set to ignore.
+    if(old_sa.sa_handler != SIG_IGN) //Query Actions
+      if(sigaction(SIGINT , &sa , NULL)<0)
+        perror("Sigaction Error");
+
+    sigaction(SIGHUP, NULL , &old_sa);
+
+    if(old_sa.sa_handler != SIG_IGN)
+      if(sigaction(SIGHUP, &sa , NULL)<0)
+        perror("Sigaction Error");
+
+    sigaction(SIGTERM, NULL , &old_sa);
+
+    if(old_sa.sa_handler != SIG_IGN)
+      if(sigaction(SIGTERM , &sa , NULL) <0)
+        perror("Sigaction Error");
+    
+  return 0;
+
+*/
+/*
+  struct sigaction sa;
+
+  sa.sa_sigaction = hdl;
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = SA_SIGINFO;
+
+  if(sigaction(SIGINT , &sa ,NULL) <0 )
+    perror("Sigaction error") , exit(EXIT_FAILURE);
+
+
+  while(true);
+  
+*/
+
+/*
+
+    pid_t pid;
+  
+    pid = fork();
+
+    if(pid == 0) // In the forked process , the fork() will return 0. 
+      childProcess(pid);
+    if(pid > 0) // In the parent process , the fork() will return the pid of froked process ( child ). 
+      parentProcess(pid);
+    else
+      perror("Fork error") , exit(EXIT_FAILURE);
+
+    exit(EXIT_SUCCESS);
+
+  */  
+
+
+  
+  
+}
+void childProcess(pid_t pid)
+{
+  char buf[256];
+  for(int i = 1 ; i < 10; ++i)
+  {
+    sprintf(buf,"This is from the child , value : %d\n" , i);
+    write(1,buf,strlen(buf));
+    sleep(1);
+
+  }
+}
+void parentProcess(pid_t pid)
+{
+  char buf[256];
+  for(int i = 1 ; i < 10; ++i)
+  {
+    sprintf(buf,"This is from the parent , value : %d\n" , i);
+    write(1,buf,strlen(buf));
+    sleep(1);
+
+  }
+}
+
+
+// Phtread practice exmaple code :
+    pthread_attr_t attr;
+    pthread_mutex_t lock; 
+    //pthread_mutex_init(&lock,NULL);
+    pthread_cond_t cond;
+    // cond = PTHREAD_COND_INITIALIZER; (statically declared)
+    //pthread_cond_init(cond); ( dynamically created )
+
+typedef struct thread_param
+{
+  int id;
+  char* msg;
+
+}thread_param;
+
+void* print_message(void* param)
+{
+
+  
+    size_t stack_size;
+    pthread_attr_getstacksize(&attr, &stack_size);
+    printf("Default stack size %zu \n",stack_size);
+
+  thread_param* t_param = (thread_param*)param;
+  printf("Id : %d Message : %s \n",t_param->id ,t_param->msg);
+
+  printf("This message is form within the thread : %d\n",(int)pthread_self());
+  return t_param->msg;
+  
+
+}
+
+int main() // Play around with Pthread functions.
+{
+
+    pthread_t thread1 , thread2;
+    thread_param* t_param = malloc(sizeof(thread_param));
+
+    size_t stack_size;
+
+    // when no longer needed 
+    pthread_mutex_destroy(&lock);
+    // Locking mechanisim
+    pthread_mutex_lock(&lock);
+    pthread_mutex_trylock(&lock);
+    
+    pthread_mutex_unlock(&lock);
+    
+
+    pthread_attr_init(&attr);
+    pthread_attr_getstacksize(&attr, &stack_size);
+    printf("Default stack size %zu \n",stack_size);
+
+    stack_size = 1048576;
+
+    pthread_attr_setstacksize(&attr, stack_size);
+
+
+    t_param->id = 99;
+    t_param->msg = "This is From param structure ";
+    
+
+    char* ret_msg;
+    int pret1 , pret2;
+ 
+    pret1 = pthread_create(&thread1,&attr,print_message,(void*)t_param);
+
+    pthread_join(thread1,(void**)&ret_msg);
+
+    if(pret1 == 0)
+      puts("Pthread creation success.");
+    else
+      perror("Pthread creation error .");
+    
+
+    pthread_exit(NULL);
+
+    exit(EXIT_SUCCESS);
+
+
+
+
+
+}

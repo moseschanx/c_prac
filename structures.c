@@ -325,3 +325,9 @@ void display_queue()
     return;
 
 }
+
+void init_bin_tree(tree_node* root)
+{
+    root->parent = NULL;
+    
+}

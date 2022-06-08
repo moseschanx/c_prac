@@ -26,7 +26,7 @@ endif
 TARGET = main.out
 
 CCFLAGS = -x c -c -g -std=c99  -O0  -Wextra -pedantic
-LDFLAGS = -std=c99 -lm  
+LDFLAGS = -std=c99 -lm -lpthread
 
 # TO use separate static library (.a ) linking , you need recompile
 # the final target using GCC instead of LD or liker optioons 
